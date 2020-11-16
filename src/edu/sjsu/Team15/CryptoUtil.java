@@ -12,7 +12,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
@@ -68,26 +67,6 @@ public class CryptoUtil {
         return AnyBaseEncoder.BASE_94.encode(input).getBytes();
     }
 
-    // random number using CSPRNG
-    public static byte[] randomNumberGen() {
-        SecureRandom secRanGen = null;
-
-        // prefered CSPRNG is system specifc, slightly odd for java
-        if(System.getProperty("os.name").startsWith("Windows"))
-        {
-            try { secRanGen = SecureRandom.getInstance("Windows-PRNG"); }
-            catch (java.security.NoSuchAlgorithmException e) { System.exit(1); }
-        }
-        else
-        {
-            secRanGen = new SecureRandom();
-        }
-
-        byte[] result = new byte[32];
-        secRanGen.nextBytes(result);
-        return result;
-    }
-
     // SHA3-256 with character output
     private static char[] hashCharOut(String salt, byte[] input) {
         byte[] byteResult = hashByteOut(salt, input);
@@ -101,7 +80,7 @@ public class CryptoUtil {
         return result;
     }
 
-    // SecureKey to
+    // SecureCharBuffer to
     private static char[] parseMasterKey(String salt, SecureCharBuffer secureKey) {
         byte[] byteMasterKey = new byte[secureKey.capacity()];
         for (int i = 0; i < secureKey.length(); i++)
