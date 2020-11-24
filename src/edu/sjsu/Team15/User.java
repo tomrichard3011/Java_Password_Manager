@@ -18,6 +18,11 @@ public class User {
         this.username = username;
         this.masterKey = masterKey;
     }
+    
+    // Added constructor to allow DomainInfo to be retrieved later
+    public User(String username, int clipboardTime, String filepath) {
+    	
+    }
 
     public int getClipboardClearTime() {
         return clipboardClearTime;
@@ -42,5 +47,10 @@ public class User {
     public void setClipboardClearTime(int clipboardClearTime) {
         this.clipboardClearTime = clipboardClearTime;
         this.getClipboardManager().setClearTime(clipboardClearTime);
+    }
+    
+    // Added method to allow DomainInfo to be retrieved later
+    public void setDomainInfo(ArrayList<DomainInfo> list) {
+    	this.domainInfoArray = list;
     }
 }
