@@ -1,5 +1,7 @@
 package edu.sjsu.Team15;
 
+import io.github.novacrypto.SecureCharBuffer;
+
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -13,11 +15,16 @@ public class ClipboardManager {
         if (System.getProperty("os.name").startsWith("Windows")) linux_system = false; // Ubuntu potentially loses functionality, so os specific programming yay;
     }
 
-    public void copyToClip(String stuff) {
+    public void copyToClip(SecureCharBuffer charBuffer) {
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < charBuffer.length(); i++) {
+            password.append(charBuffer.get(i));
+        }
+        
         if (linux_system) {
-            linuxCopyToClip(stuff);
+            linuxCopyToClip(password.toString());
         } else {
-            windowsCopyToClip(stuff);
+            windowsCopyToClip(password.toString());
         }
     }
 
@@ -25,9 +32,9 @@ public class ClipboardManager {
         this.clearTime = clearTime;
     }
 
-    private void windowsCopyToClip(String stuff) {
+    private void windowsCopyToClip(String password) {
         try {
-            StringSelection ss = new StringSelection(stuff);
+            StringSelection ss = new StringSelection(password);
             Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
             cb.setContents(ss, null);
 
@@ -41,10 +48,10 @@ public class ClipboardManager {
         }
     }
 
-    private void linuxCopyToClip(String stuff) {
+    private void linuxCopyToClip(String password) {
         try {
             Runtime run = Runtime.getRuntime();
-            run.exec(new String[]{"sh", "-c", "echo " + stuff + " | xclip -selection clipboard"});
+            run.exec(new String[]{"sh", "-c", "echo " + password + " | xclip -selection clipboard"});
             Thread.sleep(clearTime * 1000);
             run.exec(new String[]{"sh", "-c", "echo " + "" + " | xclip -selection clipboard"});
         }

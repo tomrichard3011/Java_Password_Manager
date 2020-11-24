@@ -10,6 +10,9 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -60,6 +63,26 @@ public class CryptoUtil {
             System.out.println("Error while decrypting: " + e.toString());
         }
         return null;
+    }
+
+    public static byte[] universalDecrypt(byte[] input) {
+//        byte[] hardwareAddress;
+//        try {
+//            InetAddress localHost = InetAddress.getLocalHost();
+//            NetworkInterface ni = NetworkInterface.getByInetAddress(localHost);
+//            hardwareAddress = ni.getHardwareAddress();
+//        }
+//        catch (Exception e) {
+//            hardwareAddress = new byte[32];
+//        }
+
+        SecureCharBuffer charBuffer = new SecureCharBuffer();
+        // TODO TESTING
+//        for (byte b : hardwareAddress) {
+//            charBuffer.append((char) b);
+//        }
+
+        return encrypt(charBuffer, "", input);
     }
 
     // https://github.com/mklemm/base-n-codec-java
