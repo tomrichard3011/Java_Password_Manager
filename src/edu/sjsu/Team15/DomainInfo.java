@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
@@ -20,7 +19,7 @@ public class DomainInfo {
 
     public DomainInfo(String domain, String username, SecureCharBuffer password) {
         this.domain = domain;
-        this.logoPath = System.getProperty("username.dir") + "/images/" + domain + ".png";
+        this.logoPath = System.getProperty("user.dir") + "/images/" + domain + ".png";
         this.timeStamp = new Date();
         this.username = username;
         // TODO generate password
@@ -65,13 +64,11 @@ public class DomainInfo {
         this.password = password;
     }
 
-    // NEW STUFF
-    // returns imageIcon ready for JLabel, used as an example
-    public ImageIcon getImageIcon() throws IOException {
-        BufferedImage image = ImageIO.read(new File(logoPath));
-        return new ImageIcon(image);
+    public void genNewPassword() {
+        this.password = PasswordGenerator.generatePassword();
     }
 
+    // NEW STUFF
     // UpLead.com -- need to attribute; 128x128 pixels
     private void downloadLogo(String domainName) {
         BufferedImage image;
@@ -85,7 +82,10 @@ public class DomainInfo {
         }
 
         try {
-            ImageIO.write(image, "png", new File(logoPath)); // download and save image
+            File logoLocation = new File(logoPath);
+            if (!logoLocation.exists()) { // check for location of logo, if it doesn't exist write it
+                ImageIO.write(image, "png", logoLocation); // download and save image
+            }
         }
         catch (Exception e) {
             System.exit(1); //TODO ERROR HANDLING
@@ -94,9 +94,16 @@ public class DomainInfo {
 
     // checks for existence of directory, if it doesnt exist, make a new directory
     private static void checkImageDirectory(){
-        File file = new File(System.getProperty("username.dir") + "/images");
+        File file = new File(System.getProperty("user.dir") + "/images");
         if (!file.exists()) {
-            if (!file.mkdir()) System.exit(1); //TODO ERROR HANDLING
+            if (!file.mkdir()) {
+                System.exit(1); //TODO ERROR FILE DIRECTORY COULD NOT BE CREATED
+            }
         }
+    }
+
+    @Override
+    public String toString() {
+        return domain;
     }
 }

@@ -5,22 +5,22 @@ import io.github.novacrypto.SecureCharBuffer;
 import java.util.ArrayList;
 
 public class User {
-    private int ClipboardClearTime;
+    private int clipboardClearTime;
     private ClipboardManager clipboardManager;
     private ArrayList<DomainInfo> domainInfoArray;
-    private String Username;
-    private SecureCharBuffer MaterKey;
+    private String username;
+    private SecureCharBuffer masterKey;
 
-    public User(int clipboardClearTime, ClipboardManager clipboardManager, ArrayList<DomainInfo> domainInfoArray, String username, SecureCharBuffer materKey) {
-        ClipboardClearTime = clipboardClearTime;
-        this.clipboardManager = clipboardManager;
+    public User(int clipboardClearTime, ArrayList<DomainInfo> domainInfoArray, String username, SecureCharBuffer masterKey) {
+        this.clipboardClearTime = clipboardClearTime;
+        this.clipboardManager = new ClipboardManager(clipboardClearTime);
         this.domainInfoArray = domainInfoArray;
-        Username = username;
-        MaterKey = materKey;
+        this.username = username;
+        this.masterKey = masterKey;
     }
 
     public int getClipboardClearTime() {
-        return ClipboardClearTime;
+        return clipboardClearTime;
     }
 
     public ClipboardManager getClipboardManager() {
@@ -31,11 +31,16 @@ public class User {
         return domainInfoArray;
     }
 
-    public String getUsername() {
-        return Username;
+    public String getusername() {
+        return username;
     }
 
-    public SecureCharBuffer getMaterKey() {
-        return MaterKey;
+    public SecureCharBuffer getmasterKey() {
+        return masterKey;
+    }
+
+    public void setClipboardClearTime(int clipboardClearTime) {
+        this.clipboardClearTime = clipboardClearTime;
+        this.getClipboardManager().setClearTime(clipboardClearTime);
     }
 }
