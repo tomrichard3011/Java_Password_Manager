@@ -20,8 +20,13 @@ public class User {
     }
     
     // Added constructor to allow DomainInfo to be retrieved later
-    public User(String username, int clipboardTime, String filepath) {
-    	
+    public User(String username, SecureCharBuffer password, int clipboardTime) {
+    	// Turn password into a SecureCharBuffer
+    	this.username = username;
+    	this.masterKey = password;
+    	this.clipboardClearTime = clipboardTime;
+    	this.clipboardManager = new ClipboardManager(clipboardClearTime);
+    	this.domainInfoArray = null;
     }
 
     public int getClipboardClearTime() {

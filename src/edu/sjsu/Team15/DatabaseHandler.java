@@ -39,7 +39,8 @@ public abstract class DatabaseHandler {
 			stream.write(encryptedBytes);
 			stream.close();
 		} catch(IOException e) {
-			System.out.println("Error when opening file: " + e.toString());
+			e.printStackTrace();
+			return null;
 		}
 		return secureFile;
 	}
@@ -54,7 +55,8 @@ public abstract class DatabaseHandler {
 			stream.write(unencryptedBytes);
 			stream.close();
 		} catch(IOException e) {
-			System.out.println("Error when opening file: " + e.toString());
+			e.printStackTrace();
+			return null;
 		}
 		return activeFile;
 	}
