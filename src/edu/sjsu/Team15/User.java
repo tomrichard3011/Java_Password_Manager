@@ -11,6 +11,7 @@ public class User {
     private String username;
     private SecureCharBuffer masterKey;
 
+
     public User(int clipboardClearTime, ArrayList<DomainInfo> domainInfoArray, String username, SecureCharBuffer masterKey) {
         this.clipboardClearTime = clipboardClearTime;
         this.clipboardManager = new ClipboardManager(clipboardClearTime);
@@ -19,8 +20,9 @@ public class User {
         this.masterKey = masterKey;
     }
 
-    public int getClipboardClearTime() {
-        return clipboardClearTime;
+    public void setClipboardClearTime(int clipboardClearTime) {
+        this.clipboardClearTime = clipboardClearTime;
+        this.getClipboardManager().setClearTime(clipboardClearTime);
     }
 
     public ClipboardManager getClipboardManager() {
@@ -31,16 +33,19 @@ public class User {
         return domainInfoArray;
     }
 
-    public String getusername() {
+    public String getUsername() {
         return username;
     }
 
-    public SecureCharBuffer getmasterKey() {
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public SecureCharBuffer getMasterKey() {
         return masterKey;
     }
 
-    public void setClipboardClearTime(int clipboardClearTime) {
-        this.clipboardClearTime = clipboardClearTime;
-        this.getClipboardManager().setClearTime(clipboardClearTime);
+    public void setMasterKey(SecureCharBuffer masterKey) {
+        this.masterKey = masterKey;
     }
 }

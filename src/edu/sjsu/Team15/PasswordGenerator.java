@@ -9,16 +9,24 @@ import java.security.SecureRandom;
 public class PasswordGenerator {
     // generate secureCharBuffer password
     public static SecureCharBuffer generatePassword() {
+        int length = 15;
         SecureCharBuffer secCharBuff = new SecureCharBuffer();
-        secCharBuff.append(
-                AnyBaseEncoder.BASE_94.encode(
-                        new BigInteger(1,
-                                CryptoUtil.hashByteOut(randomSaltGen(), randomNumberGen())
-                        ))); // big one liner to avoid allocating too much memory
+        char[] pass = AnyBaseEncoder.BASE_94.encode(
+                new BigInteger(1,
+                        CryptoUtil.hashByteOut(randomSaltGen(), randomNumberGen())
+                )).toCharArray(); // big one liner to avoid allocating too much memory
+
+        length = Math.min(length, pass.length);
+
+        for (int i = 0; i < length; i++) {
+            secCharBuff.append(pass[i]);
+            pass[i] = '\0';
+        }
+
         return secCharBuff;
     }
 
-    // random number and salt using CSPRNG
+    // random number using CSPRNG
     private static byte[] randomNumberGen() {
         SecureRandom secRanGen = null;
 
@@ -38,6 +46,7 @@ public class PasswordGenerator {
         return result;
     }
 
+    // random salt using CSPRNG
     private static String randomSaltGen() {
         byte[] salt = new byte[16];
         StringBuilder sb = new StringBuilder();

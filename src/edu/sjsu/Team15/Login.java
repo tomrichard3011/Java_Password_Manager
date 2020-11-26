@@ -1,7 +1,5 @@
 package edu.sjsu.Team15;
 
-import io.github.novacrypto.SecureCharBuffer;
-
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JFrame;
@@ -13,9 +11,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Login { //TODO
     JButton login, newAcc;
     LoginButtonPress loginButtonListener;
-    LinkedBlockingQueue<ButtonEnum> queue;
+    LinkedBlockingQueue<Message> queue;
 
-    public Login(LinkedBlockingQueue<ButtonEnum> queue){
+    public Login(LinkedBlockingQueue<Message> queue){
         //variables for text field and label
         JLabel username, password;
         JTextField un, pass;
@@ -67,16 +65,22 @@ public class Login { //TODO
         newAcc.addActionListener(loginButtonListener);
     }
 
-    class LoginButtonPress implements ActionListener {
+    private class LoginButtonPress implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             Object source = actionEvent.getSource();
 
             if (source == login) { // TODO BUTTONS
-                queue.add(ButtonEnum.LOGIN);
+
+                Message message = new Message();
+                message.action = Message.Action.LOGIN;
+                queue.add(message);
             }
             if (source == newAcc) {
-                queue.add(ButtonEnum.NEW_USER);
+                // TODO setup message
+                Message message = new Message();
+                message.action = Message.Action.NEW_USER;
+                queue.add(message);
             }
         }
     }

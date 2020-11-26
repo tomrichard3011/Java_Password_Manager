@@ -8,23 +8,27 @@ import java.awt.datatransfer.StringSelection;
 
 public class ClipboardManager {
     private int clearTime;
-    private boolean linux_system = true;
+    private OS os;
 
     public ClipboardManager(int clearTime) {
         this.clearTime = clearTime;
-        if (System.getProperty("os.name").startsWith("Windows")) linux_system = false; // Ubuntu potentially loses functionality, so os specific programming yay;
+        if (System.getProperty("os.name").startsWith("Linux")) os = OS.LINUX;
+        else if (System.getProperty("os.name").startsWith("Windows")) os = OS.WINDOWS;
+        else os = OS.MAC;
     }
 
     public void copyToClip(SecureCharBuffer charBuffer) {
         StringBuilder password = new StringBuilder();
-        for (int i = 0; i < charBuffer.length(); i++) {
-            password.append(charBuffer.get(i));
-        }
-        
-        if (linux_system) {
-            linuxCopyToClip(password.toString());
-        } else {
-            windowsCopyToClip(password.toString());
+        password.append(charBuffer.subSequence(0, charBuffer.length()));
+
+        switch (os) {
+            case LINUX:
+                linuxCopyToClip(password.toString());
+            case WINDOWS:
+                windowsCopyToClip(password.toString());
+            case MAC:
+                macCopyToClip(password.toString());
+
         }
     }
 
@@ -51,13 +55,32 @@ public class ClipboardManager {
     private void linuxCopyToClip(String password) {
         try {
             Runtime run = Runtime.getRuntime();
-            run.exec(new String[]{"sh", "-c", "echo " + password + " | xclip -selection clipboard"});
+            run.exec(new String[]{"sh", "-c", "echo '" + password + "' | xclip -selection clipboard"});
             Thread.sleep(clearTime * 1000);
             run.exec(new String[]{"sh", "-c", "echo " + "" + " | xclip -selection clipboard"});
         }
         catch (Exception e)
         {
+            System.exit(1);
+        }
+    }
+
+    private void macCopyToClip(String password) { // UNTESTED
+        try {
+            Runtime run = Runtime.getRuntime();
+            run.exec(new String[]{"sh", "-c", "echo '" + password + "' | pbcopy"});
+            Thread.sleep(clearTime * 1000);
+            run.exec(new String[]{"sh", "-c", "echo " + "" + " | pbcopy"});
+        }
+        catch (Exception e)
+        {
             System.exit(-1);
         }
+    }
+
+    private enum OS {
+        LINUX,
+        WINDOWS,
+        MAC
     }
 }

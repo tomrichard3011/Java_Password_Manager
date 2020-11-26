@@ -8,24 +8,25 @@ import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class SettingsView extends JFrame {
-    private LinkedBlockingQueue<ButtonEnum> queue;
+    private final LinkedBlockingQueue<Message> queue;
 
+    private final JPanel contentPane;
+    private final JTextField userName;
+    private final JTextField clear;
+    private final JPasswordField pass;
 
-    private JPanel contentPane;
-    private JTextField userName;
-    private JTextField clear;
-    private JPasswordField pass;
+    private final JButton btnSaveName;
+    private final JButton btnSavePassword;
+    private final JButton btnClearTime;
 
-    private JButton btnSaveName;
-    private JButton btnSavePassword;
-    private JButton btnClearTime;
+    private SettingButtonListener settingButtonListener = new SettingButtonListener();
 
-    private SettingButtonListener settingButtonListener;
+    private final JFrame frame = this;
 
     /**
      * Create the frame.
      */
-    public SettingsView(LinkedBlockingQueue<ButtonEnum> queue) {
+    public SettingsView(LinkedBlockingQueue<Message> queue) {
         this.queue = queue;
 
         setBounds(100, 100, 450, 200);
@@ -61,63 +62,74 @@ public class SettingsView extends JFrame {
         btnClearTime.addActionListener(settingButtonListener);
         contentPane.add(btnClearTime);
 
-
-
-
         SpringLayoutSetup((SpringLayout) contentPane.getLayout());
+        // frame setups
+        this.setPreferredSize(new Dimension(350, 150));
+        this.setResizable(false);
+        this.pack();
+        this.setVisible(true);
     }
 
     private void SpringLayoutSetup(SpringLayout layout) {
         // USERNAME LAYOUT
+        // user button
         layout.putConstraint(SpringLayout.NORTH, btnSaveName, 20,
                 SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, btnSaveName, 20,
-                SpringLayout.WEST, contentPane);
-
+        layout.putConstraint(SpringLayout.EAST, btnSaveName, -10,
+                SpringLayout.WEST, userName);
+        //user label
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, userName, 0,
                 SpringLayout.VERTICAL_CENTER, btnSaveName);
         layout.putConstraint(SpringLayout.WEST, userName, 20,
-                SpringLayout.EAST, btnSaveName);
+                SpringLayout.HORIZONTAL_CENTER, this);
 
         // PASSWORD LAYOUT
+        // password button
         layout.putConstraint(SpringLayout.NORTH, btnSavePassword, 20,
                 SpringLayout.SOUTH, btnSaveName);
-        layout.putConstraint(SpringLayout.WEST, btnSavePassword, 20,
-                SpringLayout.WEST, contentPane);
-
+        layout.putConstraint(SpringLayout.EAST, btnSavePassword, -10,
+                SpringLayout.WEST, pass);
+        // password label
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, pass, 0,
                 SpringLayout.VERTICAL_CENTER, btnSavePassword);
         layout.putConstraint(SpringLayout.WEST, pass, 20,
-                SpringLayout.EAST, btnSavePassword);
+                SpringLayout.HORIZONTAL_CENTER, this);
 
         // CLEAR TIME BUTTON
+        // clear time button
         layout.putConstraint(SpringLayout.NORTH, btnClearTime, 20,
                 SpringLayout.SOUTH, btnSavePassword);
-        layout.putConstraint(SpringLayout.WEST, btnClearTime, 20,
-                SpringLayout.WEST, contentPane);
-
+        layout.putConstraint(SpringLayout.EAST, btnClearTime, -10,
+                SpringLayout.WEST, clear);
+        // clear time label
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, clear, 0,
                 SpringLayout.VERTICAL_CENTER, btnClearTime);
         layout.putConstraint(SpringLayout.WEST, clear, 20,
-                SpringLayout.EAST, btnClearTime);
+                SpringLayout.HORIZONTAL_CENTER, this);
     }
 
     class SettingButtonListener implements ActionListener { //TODO
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             Object source = actionEvent.getSource();
+            Message message = new Message();
 
             if (source == btnSaveName) {
-                queue.add(ButtonEnum.SET_USERNAME);
+                message.action = Message.Action.SET_USERNAME;
+                queue.add(message);
             }
 
             if (source == btnSavePassword) {
-                queue.add(ButtonEnum.SET_PASSWORD);
+                message.action = Message.Action.SET_PASSWORD;
+                queue.add(message);
             }
 
             if (source == btnClearTime) {
-                queue.add(ButtonEnum.SET_CLEARTIME);
+                message.action = Message.Action.SET_CLEARTIME;
+                queue.add(message);
             }
+
+            frame.dispose();
         }
     }
 }
