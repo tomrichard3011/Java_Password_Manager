@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DomainInfoView extends JPanel{
     // Actual Object temporary
     private DomainInfo domainInfo;
-    private final LinkedBlockingQueue<ButtonEnum> queue;
+    private final LinkedBlockingQueue<Message> queue;
 
     // JComponents
     private final JLabel domain;
@@ -28,11 +28,11 @@ public class DomainInfoView extends JPanel{
 
     ButtonPress buttonListener = new ButtonPress();
 
-    public DomainInfoView(DomainInfo domainInfo, LinkedBlockingQueue<ButtonEnum> queue) {
+    public DomainInfoView(DomainInfo domainInfo, LinkedBlockingQueue<Message> queue) {
         this.domainInfo = domainInfo;
         this.queue = queue;
 
-        domain = new JLabel(this.domainInfo.getDomain() + ".com");
+        domain = new JLabel(this.domainInfo.getDomain());
         logo = new JLabel();
         logo.setIcon(getImageIcon());
         username = new JLabel("Username: " + this.domainInfo.getUsername());
@@ -68,7 +68,7 @@ public class DomainInfoView extends JPanel{
         this.domainInfo = domainInfo; // set new domain info
 
         // set
-        this.domain.setText(this.domainInfo.getDomain() + ".com");
+        this.domain.setText(this.domainInfo.getDomain());
         this.logo.setIcon(getImageIcon());
         this.logo.repaint();
         this.username.setText("Username: " + this.domainInfo.getUsername());
@@ -140,22 +140,31 @@ public class DomainInfoView extends JPanel{
         return new ImageIcon(image);
     }
 
-    class ButtonPress implements ActionListener {
+    private class ButtonPress implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             Object source = actionEvent.getSource();
+            Message message = new Message();
 
             if (source == editButton) {
-                queue.add(ButtonEnum.EDIT_DOMAININFO);
+                message.action = Message.Action.EDIT_DOMAININFO;
+                message.setDomainInfo(domainInfo);
+                queue.add(message);
             }
             if (source == deleteButton) {
-                queue.add(ButtonEnum.DELETE_DOMAININFO);
+                message.action = Message.Action.DELETE_DOMAININFO;
+                message.setDomainInfo(domainInfo);
+                queue.add(message);
             }
             if (source == copyPassButton) {
-                queue.add(ButtonEnum.COPY_PASSWORD);
+                message.action = Message.Action.COPY_PASSWORD;
+                message.setDomainInfo(domainInfo);
+                queue.add(message);
             }
             if (source == genNewPassButton) {
-                queue.add(ButtonEnum.GENERATE_PASSWORD);
+                message.action = Message.Action.GENERATE_PASSWORD;
+                message.setDomainInfo(domainInfo);
+                queue.add(message);
             }
         }
     }

@@ -3,7 +3,6 @@ package edu.sjsu.Team15;
 import io.github.novacrypto.SecureCharBuffer;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
@@ -22,10 +21,7 @@ public class DomainInfo {
         this.logoPath = System.getProperty("user.dir") + "/images/" + domain + ".png";
         this.timeStamp = new Date();
         this.username = username;
-        // TODO generate password
-        if (PasswordChecker.checkPass(password, timeStamp)) {
-            this.password = password;
-        }
+        this.password = password; // TODO PASSWORD CHECK
 
         checkImageDirectory();
         downloadLogo(domain);
@@ -42,7 +38,7 @@ public class DomainInfo {
 
     public Date getTimeStamp() {
         return timeStamp;
-    }
+    } // TODO timestamp checking
 
     public void setTimeStamp(Date timeStamp) {
         this.timeStamp = timeStamp;
