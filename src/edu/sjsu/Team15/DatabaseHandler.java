@@ -62,6 +62,14 @@ public abstract class DatabaseHandler {
 	}
 	
 	/**
+	 * Return the temporary file location, where the decrypted file is
+	 * @return File The temporary file location
+	 */
+	public File getActiveFile() {
+		return activeFile;
+	}
+	
+	/**
 	 * Change the decrypted file location.
 	 * Destroys the previous instance of the decrypted file and sets the
 	 * new location at the specified spot. The only way to destroy tmp file

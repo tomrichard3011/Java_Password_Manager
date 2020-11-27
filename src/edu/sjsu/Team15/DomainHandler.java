@@ -2,21 +2,18 @@ package edu.sjsu.Team15;
 
 import java.util.ArrayList;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+
 import io.github.novacrypto.SecureCharBuffer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -70,13 +67,24 @@ public class DomainHandler extends DatabaseHandler {
 	}
 	
 	// Write all domains
+	/**
+	 * Write the domain ArrayList to the domain file personal to the user
+	 * The function creates a new Document, and translates the DOM object to the
+	 * file. After saving the file to a temporary directory, it is then encrypted
+	 * to the correct secure filepath location (provided in the constructor).
+	 * DomainHandler requires username, password, and filepath, which is how the
+	 * file is correctly written for the user.
+	 * @param domains The ArrayList of domains
+	 * @return Whether the process was successfully completed
+	 */
 	public boolean writeDomains(ArrayList<DomainInfo> domains) {
 		// Prepare file to write
-		Document doc;
+		Document doc = null;
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
-			doc = dbBuilder.parse(database);
+			//doc = dbBuilder.parse(database);
+			doc = dbBuilder.newDocument();
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
@@ -97,6 +105,7 @@ public class DomainHandler extends DatabaseHandler {
 	        DOMSource source = new DOMSource(doc);
 	        
 	        // I have no idea if this overwrites, I guess we'll find out the hard way
+	        database = File.createTempFile("sjsu", ".xml");
 	        StreamResult file = new StreamResult(database);
 	        transformer.transform(source, file);
 		} catch (Exception e) {
@@ -105,17 +114,74 @@ public class DomainHandler extends DatabaseHandler {
 		}
 		
 		// Encrypt the file: Warning, this will destroy the original file
+		// Set active file, then encrypt that file to the right location
+		setActiveFile(database.getAbsolutePath());
 		if(encrypt(master, salt) == null) {
 			return false;
 		}
 		return true;
 	}
 	
-	// TODO: Create a new domain file
-	// Static: Create a new domain file
-	public static File createNewDomainFile() {
+	/**
+	 * Create a new domain database for a new user
+	 * Generate one from scratch. Since the user doesn't exist, a static method needs to build one
+	 * from scratch without the provided abstract methods. If there's time, I'll rewrite it to better
+	 * implement the superclass.
+	 * @param username The salt used in encryption
+	 * @param password The buffer used to encrypt the file
+	 * @param secureFileLocation The final location of the secure file location
+	 * @return
+	 */
+	public static File createNewDomainFile(String username, SecureCharBuffer password, File secureFileLocation) {
+		// Prepare file to write
+		Document doc;
+		try {
+			DocumentBuilderFactory domainFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder domainBuilder = domainFactory.newDocumentBuilder();
+			doc = domainBuilder.newDocument();
+			Element root = doc.createElementNS("WeCouldAddAHashHereThatVerifiesFile", "domains");
+			doc.appendChild(root);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 		
-		return null;
+		// Write to the DOM object
+		Transformer transformer;
+		DOMSource source;
+		try {
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	        transformer = transformerFactory.newTransformer();
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        source = new DOMSource(doc);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+        
+        // Write to temporary file
+		File temporaryFile;
+		try {
+	        temporaryFile = File.createTempFile("sjsu", ".xml");
+	        StreamResult file = new StreamResult(temporaryFile);
+	        transformer.transform(source, file);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+        // Encrypt to the provided location
+		try {
+	        byte[] fileBytes = Files.readAllBytes(temporaryFile.toPath());
+	        byte[] encryptedBytes = CryptoUtil.encrypt(password, username, fileBytes);
+	        FileOutputStream stream = new FileOutputStream(secureFileLocation.getAbsoluteFile(), false);
+			stream.write(encryptedBytes);
+			stream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return secureFileLocation;
 	}
 	
 	private SecureCharBuffer convertToBuffer(String hash) {
