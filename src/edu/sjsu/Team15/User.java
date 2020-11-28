@@ -74,8 +74,4 @@ public class User {
     public File getFileLocation() {
     	return secureFile;
     }
-
-    public SecureCharBuffer getmasterKey() {
-        return this.masterKey;
-    }
 }
