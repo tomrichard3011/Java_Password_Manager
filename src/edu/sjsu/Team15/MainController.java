@@ -66,9 +66,10 @@ public class MainController {
     }
 
     // HELPER FUNCTIONS
-    private void edit(Message message) { // TODO
-        //message.getDomainInfo();
+    private void edit(Message message) {
         System.out.println("Edit");
+        DomainInfo domainInfo = message.getDomainInfo();
+        new EditDomainInfoView(domainInfo, domainInfoView);
     }
 
     private void delete(Message message) {
@@ -79,9 +80,11 @@ public class MainController {
 
     private void copy(Message message) {
         System.out.println("Copy");
-        ClipboardManager cbManager = user.getClipboardManager();
+
         SecureCharBuffer pass = message.getDomainInfo().getPassword();
-        cbManager.copyToClip(pass);
+        ClipboardManager cbManager = new ClipboardManager(pass, user.getClipboardClearTime());
+        new Thread(cbManager).start();
+        cbManager.setCharBuffer(new SecureCharBuffer());
     }
 
     private void generate(Message message) {
