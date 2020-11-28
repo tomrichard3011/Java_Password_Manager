@@ -69,9 +69,7 @@ public class Login { //TODO
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             Object source = actionEvent.getSource();
-
             if (source == login) { // TODO BUTTONS
-
                 Message message = new Message();
                 message.action = Message.Action.LOGIN;
                 queue.add(message);

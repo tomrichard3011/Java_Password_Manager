@@ -65,24 +65,18 @@ public class CryptoUtil {
         return null;
     }
 
-    public static byte[] universalDecrypt(byte[] input) {
-//        byte[] hardwareAddress;
-//        try {
-//            InetAddress localHost = InetAddress.getLocalHost();
-//            NetworkInterface ni = NetworkInterface.getByInetAddress(localHost);
-//            hardwareAddress = ni.getHardwareAddress();
-//        }
-//        catch (Exception e) {
-//            hardwareAddress = new byte[32];
-//        }
-
+    public static byte[] universalEncrypt(byte[] input) {
         SecureCharBuffer charBuffer = new SecureCharBuffer();
-        // TODO TESTING
-//        for (byte b : hardwareAddress) {
-//            charBuffer.append((char) b);
-//        }
+        charBuffer.append(System.getProperty("user.home"));
 
-        return encrypt(charBuffer, "", input);
+        return encrypt(charBuffer, System.getProperty("os.name"), input);
+    }
+
+    public static byte[] universalDecrypt(byte[] input) {
+        SecureCharBuffer charBuffer = new SecureCharBuffer();
+        charBuffer.append(System.getProperty("user.home"));
+
+        return decrypt(charBuffer, System.getProperty("os.name"), input);
     }
 
     // https://github.com/mklemm/base-n-codec-java

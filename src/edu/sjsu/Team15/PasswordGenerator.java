@@ -5,12 +5,26 @@ import net.codesup.utilities.basen.AnyBaseEncoder;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Date;
 
 public class PasswordGenerator {
-    // generate secureCharBuffer password
+
     public static SecureCharBuffer generatePassword() {
+        SecureCharBuffer charBuffer;
+        Date date = new Date();
+        do {
+            charBuffer = PasswordGenerator.generatePasswordHelper();
+        } while (!PasswordChecker.checkPass(charBuffer, date));
+
+        return charBuffer;
+    }
+
+    // generate secureCharBuffer password
+    private static SecureCharBuffer generatePasswordHelper() {
         int length = 15;
         SecureCharBuffer secCharBuff = new SecureCharBuffer();
+
+        // get password in base 94
         char[] pass = AnyBaseEncoder.BASE_94.encode(
                 new BigInteger(1,
                         CryptoUtil.hashByteOut(randomSaltGen(), randomNumberGen())
@@ -19,8 +33,8 @@ public class PasswordGenerator {
         length = Math.min(length, pass.length);
 
         for (int i = 0; i < length; i++) {
-            secCharBuff.append(pass[i]);
-            pass[i] = '\0';
+            secCharBuff.append(pass[i]); // move password to secure char buffer
+            pass[i] = '\0'; // null out character array
         }
 
         return secCharBuff;

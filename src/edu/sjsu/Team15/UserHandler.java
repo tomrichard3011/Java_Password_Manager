@@ -79,7 +79,7 @@ public class UserHandler extends DatabaseHandler {
 				NodeList elements = node.getChildNodes();
 				String fileLoc = elements.item(2).getNodeValue();
 				User currentUser = new User(username, password, Integer.parseInt(elements.item(1).getNodeValue()), elements.item(2).getTextContent());
-				DomainHandler domainHandler = new DomainHandler(fileLoc, currentUser.getmasterKey(), currentUser.getusername());
+				DomainHandler domainHandler = new DomainHandler(fileLoc, currentUser.getMasterKey(), currentUser.getUsername());
 				currentUser.setDomainInfo(domainHandler.getDomains());
 				return currentUser;
 			} else {

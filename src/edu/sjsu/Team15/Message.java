@@ -46,13 +46,13 @@ public class Message {
         DELETE_DOMAININFO,
         COPY_PASSWORD,
         GENERATE_PASSWORD,
-        LOGIN,
-        NEW_USER,
         SET_USERNAME,
         SET_PASSWORD,
         SET_CLEARTIME,
         CREATE_DOMAININFO_MENU,
         SETTINGS_MENU,
         ADD_DOMAININFO,
+        LOGIN,
+        NEW_USER,
     }
 }

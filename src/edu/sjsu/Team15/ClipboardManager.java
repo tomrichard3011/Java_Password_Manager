@@ -6,7 +6,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
-public class ClipboardManager {
+public class ClipboardManager { // TODO multithread me
     private int clearTime;
     private OS os;
 
