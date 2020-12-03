@@ -107,7 +107,9 @@ public class DomainHandler extends DatabaseHandler {
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        Transformer transformer = transformerFactory.newTransformer();
-	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 	        DOMSource source = new DOMSource(doc);
 	        
 	        // I have no idea if this overwrites, I guess we'll find out the hard way
@@ -158,7 +160,9 @@ public class DomainHandler extends DatabaseHandler {
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        transformer = transformerFactory.newTransformer();
-	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 	        source = new DOMSource(doc);
 		} catch (Exception e) {
 			e.printStackTrace();

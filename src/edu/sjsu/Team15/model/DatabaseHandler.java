@@ -49,7 +49,7 @@ public abstract class DatabaseHandler {
 		try {
 			// Transform encrypted file to unencrypted byte array
 			byte[] fileBytes = Files.readAllBytes(secureFile.toPath());
-			byte[] unencryptedBytes = CryptoUtil.encrypt(sk, username, fileBytes);
+			byte[] unencryptedBytes = CryptoUtil.decrypt(sk, username, fileBytes);
 			// Create new unencrypted file
 			FileOutputStream stream = new FileOutputStream(activeFile.getAbsoluteFile(), false);
 			stream.write(unencryptedBytes);
@@ -80,10 +80,13 @@ public abstract class DatabaseHandler {
 	public File setActiveFile(String path) {
 		// Destroy original instance, if any data existed
 		try {
-			activeFile.delete();
-			activeFile = new File(path);
-			activeFile.deleteOnExit();
+			if(!activeFile.getAbsolutePath().equals(path)) {
+				activeFile.delete();
+				activeFile = new File(path);
+				activeFile.deleteOnExit();
+			}
 		} catch (SecurityException e) {
+			e.printStackTrace();
 			System.out.println("WARNING: Decrypted file cannot be removed due to permissions! Please delete the file manually or resolve permissions.");
 		}
 		return activeFile;
