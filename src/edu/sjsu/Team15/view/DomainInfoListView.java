@@ -1,4 +1,6 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.view;
+
+import edu.sjsu.Team15.model.DomainInfo;
 
 import javax.swing.*;
 import java.awt.event.*;

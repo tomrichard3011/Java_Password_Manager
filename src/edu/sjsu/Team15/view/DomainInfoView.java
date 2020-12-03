@@ -1,4 +1,7 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.view;
+
+import edu.sjsu.Team15.model.DomainInfo;
+import edu.sjsu.Team15.Message;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

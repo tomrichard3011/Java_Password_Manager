@@ -1,4 +1,6 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.view;
+
+import edu.sjsu.Team15.Message;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -8,12 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class Login { //TODO
+public class LoginView { //TODO
     JButton login, newAcc;
     LoginButtonPress loginButtonListener;
     LinkedBlockingQueue<Message> queue;
 
-    public Login(LinkedBlockingQueue<Message> queue){
+    public LoginView(LinkedBlockingQueue<Message> queue){
         //variables for text field and label
         JLabel username, password;
         JTextField un, pass;

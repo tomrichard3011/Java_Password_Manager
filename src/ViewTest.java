@@ -1,4 +1,11 @@
 import edu.sjsu.Team15.*;
+import edu.sjsu.Team15.controller.MainController;
+import edu.sjsu.Team15.model.DomainInfo;
+import edu.sjsu.Team15.model.PasswordGenerator;
+import edu.sjsu.Team15.model.User;
+import edu.sjsu.Team15.view.DomainInfoListView;
+import edu.sjsu.Team15.view.DomainInfoView;
+import edu.sjsu.Team15.view.MainView;
 import io.github.novacrypto.SecureCharBuffer;
 
 import javax.swing.*;
