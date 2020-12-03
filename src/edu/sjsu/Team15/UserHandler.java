@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import io.github.novacrypto.SecureCharBuffer;
 import javax.xml.parsers.DocumentBuilder;
@@ -24,7 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 /**
- * Currently not working: Do not attempt to run, finalized function delcarations will be different
+ * Currently not working: Do not attempt to run, finalized function declarations will be different
  * Look to DomainHandler for a more complete class
  * @author Nicolas Guerrero
  */
@@ -61,6 +63,14 @@ public class UserHandler extends DatabaseHandler {
 		// Prepare the document to be parsed
 		try {
 			database = decrypt(master, salt);
+			
+			// Debugging: Reading the file from temp directory
+			Path path = Paths.get(database.getAbsolutePath());
+			String template = Files.readString(path);
+			System.out.println("------------------");
+			System.out.println(template);
+			System.out.println("------------------");
+			
 			FileInputStream stream = new FileInputStream(database);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
@@ -75,10 +85,29 @@ public class UserHandler extends DatabaseHandler {
 			stream.close();
 			
 			if(node != null && node.hasChildNodes()) {
-				// Username is attribute of user, pass is 0, clipboard is 1, filepath is 2
+				// Username is 0, pass is 1, clipboard is 2, filepath is 3 getNodeValue()
 				NodeList elements = node.getChildNodes();
-				String fileLoc = elements.item(2).getNodeValue();
-				User currentUser = new User(username, password, Integer.parseInt(elements.item(1).getNodeValue()), elements.item(2).getTextContent());
+				
+				// Read through the node list TODO
+				System.out.println("----------------------");
+				for(int i = 0; i < elements.getLength(); i++) {
+					System.out.print(i);
+					System.out.print(" :");
+					System.out.print(elements.item(i).getNodeName());
+					System.out.print(" :");
+					System.out.print(elements.item(i).getNodeValue());
+					System.out.print(" :");
+					System.out.println(elements.item(i).getTextContent());
+					
+					if(elements.item(i).getTextContent().contains("\n")) {
+						System.out.print("Unusual behavior, but understandable");
+						System.out.println(elements.item(i).getTextContent().length());
+					}
+				}
+				System.out.println("-------------------------");
+				
+				String fileLoc = elements.item(3).getTextContent();
+				User currentUser = new User(username, password, Integer.parseInt(elements.item(2).getTextContent()), elements.item(3).getTextContent());
 				DomainHandler domainHandler = new DomainHandler(fileLoc, currentUser.getMasterKey(), currentUser.getUsername());
 				currentUser.setDomainInfo(domainHandler.getDomains());
 				return currentUser;
@@ -150,7 +179,9 @@ public class UserHandler extends DatabaseHandler {
 			// Rewrite a new user file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        Transformer transformer = transformerFactory.newTransformer();
-	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 	        DOMSource source = new DOMSource(userXML);
 	        StreamResult file = new StreamResult(database);
 	        transformer.transform(source, file);
@@ -163,7 +194,10 @@ public class UserHandler extends DatabaseHandler {
 			} else {
 				// Build the user object
 				User currentUser = new User(clipboardTime, new ArrayList<DomainInfo>(), username, password);
+				secureFile = DomainHandler.createNewDomainFile(username, password, secureFile);
 				currentUser.setFileLocation(secureFile);
+				// Build domain file
+				
 				return currentUser;
 			}
 		} catch (Exception e) {
@@ -201,7 +235,9 @@ public class UserHandler extends DatabaseHandler {
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        transformer = transformerFactory.newTransformer();
-	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 	        source = new DOMSource(doc);
 		} catch (Exception e) {
 			e.printStackTrace();
