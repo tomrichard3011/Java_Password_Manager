@@ -1,14 +1,14 @@
-package edu.sjsu.tests;
+package JUnit4Tests;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
-import edu.sjsu.Team15.CryptoUtil;
-import edu.sjsu.Team15.DomainInfo;
-import edu.sjsu.Team15.User;
-import edu.sjsu.Team15.UserHandler;
+import edu.sjsu.Team15.model.CryptoUtil;
+import edu.sjsu.Team15.model.DomainInfo;
+import edu.sjsu.Team15.model.User;
+import edu.sjsu.Team15.model.UserHandler;
 import io.github.novacrypto.SecureCharBuffer;
 
 public class XMLTest {
