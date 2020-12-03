@@ -1,4 +1,4 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.model;
 
 import io.github.novacrypto.SecureCharBuffer;
 import net.codesup.utilities.basen.AnyBaseEncoder;
@@ -9,6 +9,10 @@ import java.util.Date;
 
 public class PasswordGenerator {
 
+    /**
+     * generate a secure password
+     * @return SecureCharBuffer that holds the password
+     */
     public static SecureCharBuffer generatePassword() {
         SecureCharBuffer charBuffer;
         Date date = new Date();
@@ -19,7 +23,10 @@ public class PasswordGenerator {
         return charBuffer;
     }
 
-    // generate secureCharBuffer password
+    /**
+     * Generate a password with length 15 and then base 94 encoded
+     * @return
+     */
     private static SecureCharBuffer generatePasswordHelper() {
         int length = 15;
         SecureCharBuffer secCharBuff = new SecureCharBuffer();
@@ -40,7 +47,10 @@ public class PasswordGenerator {
         return secCharBuff;
     }
 
-    // random number using CSPRNG
+    /**
+     * Random number using CSPRNG
+     * @return random number in byte[]
+     */
     private static byte[] randomNumberGen() {
         SecureRandom secRanGen = null;
 
@@ -60,7 +70,10 @@ public class PasswordGenerator {
         return result;
     }
 
-    // random salt using CSPRNG
+    /**
+     * Random string from CSPRNG
+     * @return random String
+     */
     private static String randomSaltGen() {
         byte[] salt = new byte[16];
         StringBuilder sb = new StringBuilder();

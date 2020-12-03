@@ -1,6 +1,11 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.controller;
 
 
+import edu.sjsu.Team15.*;
+import edu.sjsu.Team15.model.ClipboardManager;
+import edu.sjsu.Team15.model.DomainInfo;
+import edu.sjsu.Team15.model.User;
+import edu.sjsu.Team15.view.*;
 import io.github.novacrypto.SecureCharBuffer;
 
 import java.util.concurrent.LinkedBlockingQueue;

@@ -1,4 +1,8 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.view;
+
+import edu.sjsu.Team15.Message;
+import edu.sjsu.Team15.view.DomainInfoListView;
+import edu.sjsu.Team15.view.DomainInfoView;
 
 import javax.swing.*;
 import java.awt.*;

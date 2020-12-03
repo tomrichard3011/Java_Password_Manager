@@ -1,5 +1,7 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.view;
 // TODO
+
+import edu.sjsu.Team15.Message;
 
 import javax.swing.*;
 import java.awt.*;

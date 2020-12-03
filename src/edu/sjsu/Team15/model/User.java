@@ -1,5 +1,6 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.model;
 
+import edu.sjsu.Team15.model.DomainInfo;
 import io.github.novacrypto.SecureCharBuffer;
 import java.io.File;
 import java.util.ArrayList;

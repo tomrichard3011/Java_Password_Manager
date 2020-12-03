@@ -1,5 +1,8 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.controller;
 
+
+import edu.sjsu.Team15.Message;
+import edu.sjsu.Team15.model.User;
 import io.github.novacrypto.SecureCharBuffer;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,7 +30,7 @@ public class LoginController {
         }
     }
 
-    private User validateUser() {
+    private User validateUser() { // TODO
         return new User("user", new SecureCharBuffer(), 3, "");
     }
 

@@ -1,4 +1,4 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.model;
 
 import io.github.novacrypto.SecureCharBuffer;
 import net.codesup.utilities.basen.AnyBaseEncoder;
@@ -10,16 +10,18 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 public class CryptoUtil {
-    // uses sha3-256
+    /**
+     * SHA3-256
+     * @param salt salt used for hashing
+     * @param input data to hash
+     * @return always returns 32 byte hash
+     */
     public static byte[] hashByteOut(String salt, byte[] input) {
         MessageDigest digest = null;
         try { digest = MessageDigest.getInstance("SHA3-256"); }
@@ -30,14 +32,23 @@ public class CryptoUtil {
     }
 
     // https://howtodoinjava.com/java/java-security/aes-256-encryption-decryption/
-    public static byte[] encrypt(SecureCharBuffer secureKey, String username, byte[] input) {
+    /**
+     * Symmetric key encryption using a secret key and username as salt
+     * @param secureKey
+     * @param salt salt used for encryption
+     * @param input plain text data to encrypt
+     * @return ciphertext as variable length byte array
+     */
+    public static byte[] encrypt(SecureCharBuffer secureKey, String salt, byte[] input) {
         try
         {
-            byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
-            SecretKeySpec secretKey = AESHelper(secureKey, username);
+            SecretKeySpec secretKey = AESHelper(secureKey, salt);
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivspec);
+            cipher.init(
+                    Cipher.ENCRYPT_MODE,
+                    secretKey,
+                    new IvParameterSpec(new byte[16])
+            );
             return cipher.doFinal(input);
         }
         catch (Exception e)
@@ -48,15 +59,23 @@ public class CryptoUtil {
     }
 
     // https://howtodoinjava.com/java/java-security/aes-256-encryption-decryption/
-    public static byte[] decrypt(SecureCharBuffer secureKey, String username, byte[] input) {
+    /**
+     * Symmetric key decryption using secret key and username as salt
+     * @param secureKey symmetric key for encryption
+     * @param salt salt used for encryption
+     * @param input cipher text to be decrypted
+     * @return plaintext as byte[]
+     */
+    public static byte[] decrypt(SecureCharBuffer secureKey, String salt, byte[] input) {
         try
         {
-            byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
-            SecretKeySpec secretKey = AESHelper(secureKey, username);
+            SecretKeySpec secretKey = AESHelper(secureKey, salt);
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
+            cipher.init(
+                    Cipher.DECRYPT_MODE,
+                    secretKey,
+                    new IvParameterSpec(new byte[16])
+            );
             return cipher.doFinal(input);
         }
         catch (Exception e) {
@@ -65,6 +84,12 @@ public class CryptoUtil {
         return null;
     }
 
+    /**
+     * Encryption using user specific data as encryption key
+     * @param input plaintext data as byte array
+     * @return encrypted data as plaintext
+     */
+    // TODO NOT SECURE, need a reliable way of creating machine specific keys
     public static byte[] universalEncrypt(byte[] input) {
         SecureCharBuffer charBuffer = new SecureCharBuffer();
         charBuffer.append(System.getProperty("user.home"));
@@ -72,6 +97,12 @@ public class CryptoUtil {
         return encrypt(charBuffer, System.getProperty("os.name"), input);
     }
 
+    /**
+     * Decryption using user specific data as encryption key
+     * @param input encrypted data
+     * @return
+     */
+    // TODO NOT SECURE, need a reliable way of creating machine specific keys
     public static byte[] universalDecrypt(byte[] input) {
         SecureCharBuffer charBuffer = new SecureCharBuffer();
         charBuffer.append(System.getProperty("user.home"));
@@ -80,11 +111,23 @@ public class CryptoUtil {
     }
 
     // https://github.com/mklemm/base-n-codec-java
+
+    /**
+     * Encodes byte array to base94 to fit ascii safe characters
+     * @param input data to be encoded
+     * @return encoded data
+     */
     public static byte[] base94encode(byte[] input) {
         return AnyBaseEncoder.BASE_94.encode(input).getBytes();
     }
 
     // SHA3-256 with character output
+    /**
+     * Sha3-256
+     * @param salt salt used for hashing
+     * @param input data to hash
+     * @return always returns 32 char[]
+     */
     private static char[] hashCharOut(String salt, byte[] input) {
         byte[] byteResult = hashByteOut(salt, input);
         char[] result = new char[byteResult.length];
@@ -97,7 +140,12 @@ public class CryptoUtil {
         return result;
     }
 
-    // SecureCharBuffer to
+    /**
+     * Gets hash of of secureCharBuffer
+     * @param salt salt used for hashing
+     * @param secureKey key to transform into hash
+     * @return
+     */
     private static char[] parseMasterKey(String salt, SecureCharBuffer secureKey) {
         byte[] byteMasterKey = new byte[secureKey.capacity()];
         for (int i = 0; i < secureKey.length(); i++)
@@ -105,7 +153,14 @@ public class CryptoUtil {
         return hashCharOut(salt, byteMasterKey);
     }
 
-    // repeated code for encrypt and decrypt AES
+    /**
+     * Helper method for AES
+     * @param secureKey Master key for encryption
+     * @param salt salt for encryption
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
     private static SecretKeySpec AESHelper(SecureCharBuffer secureKey, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
         char[] masterKey = parseMasterKey(salt, secureKey);
 
