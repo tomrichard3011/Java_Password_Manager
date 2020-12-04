@@ -1,16 +1,12 @@
-package edu.sjsu.tests;
+package JUnit4Tests;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 
-import edu.sjsu.Team15.CryptoUtil;
-import edu.sjsu.Team15.DomainHandler;
-import edu.sjsu.Team15.DomainInfo;
 import edu.sjsu.Team15.HandlerConstants;
-import edu.sjsu.Team15.User;
-import edu.sjsu.Team15.UserHandler;
+import edu.sjsu.Team15.model.DomainHandler;
+import edu.sjsu.Team15.model.DomainInfo;
+import edu.sjsu.Team15.model.User;
+import edu.sjsu.Team15.model.UserHandler;
 import io.github.novacrypto.SecureCharBuffer;
 
 // JUnit 4 Test Suite
@@ -48,34 +44,36 @@ public class XMLTest {
 		
 		
 		// XML File Constants: User File
-		String userFilepath = "C:\\Users\\Guerr\\eclipse-workspace\\PassMan\\xmlTests\\user.xyt";
+		String fileSep = System.getProperty("file.separator");
+
+		String userFilepath = System.getProperty("user.dir") + fileSep + "xmlTests" + fileSep + "user.xyt";
 		String userSalt = "user";
 		SecureCharBuffer internalKey = new SecureCharBuffer();
 		internalKey.append("special");
 		
 		// XML File Constants: Domain File
-		String filepath = "C:\\Users\\Guerr\\eclipse-workspace\\PassMan\\xmlTests\\domain.xyt";
+		String filepath = System.getProperty("user.dir") + fileSep + "xmlTests" + fileSep + userSalt + "domains.xyt";
 		String salt = "username";
 		SecureCharBuffer key = new SecureCharBuffer();
 		key.append("password");
 		
 		// Create an xml file
-		File encryptedUserFile = UserHandler.createNewUserFile(userSalt, internalKey, new File(userFilepath));
+		File encryptedUserFile = UserHandler.createNewUserFile(new File(userFilepath));
 		
 		try {
 			// Add a user (UserHandler)
-			UserHandler uHandler = new UserHandler(encryptedUserFile.getAbsolutePath(), internalKey, userSalt);
+			UserHandler uHandler = new UserHandler(encryptedUserFile.getAbsolutePath());
 			// Test 2: Check for a user that doesn't exist in the file (Done above)
 			System.out.print("This should be false: ");
 			System.out.println(uHandler.checkUser(salt));
-			User person = uHandler.addUser(salt, key, 200, new File(filepath));
+			User person = uHandler.addUser(salt, key, 200, new File(filepath)); // add user
 			
 			// Check that the user is there
 			System.out.println("The line below me should be true:");
 			System.out.println(uHandler.checkUser(salt));
 			
 			// By adding the user, we get a user object. Now, let's try to pull that from the file
-			UserHandler anotherHandler = new UserHandler(encryptedUserFile.getAbsolutePath(), internalKey, userSalt);
+			UserHandler anotherHandler = new UserHandler(encryptedUserFile.getAbsolutePath());
 			User samePerson = anotherHandler.verifyUser(salt, key);
 			
 			// Test 1: Confirm it was added to the file
@@ -84,8 +82,8 @@ public class XMLTest {
 			System.out.println(person.getUsername());
 			System.out.println(samePerson.getUsername());
 			// Compare that both passwords are the same
-			System.out.println(person.getmasterKey().toStringAble());
-			System.out.println(samePerson.getmasterKey().toStringAble());
+			System.out.println(person.getMasterKey().toStringAble());
+			System.out.println(samePerson.getMasterKey().toStringAble());
 			// Compare that both DomainInfo arrays are empty
 			System.out.println(person.getDomainInfoArray().size());
 			System.out.println(samePerson.getDomainInfoArray().size());
@@ -103,7 +101,7 @@ public class XMLTest {
 			}
 			
 			// Test 4: Add a user & remove the original user
-			anotherHandler.addUser("delete me", internalKey, 100, new File("C:\\Users\\Guerr\\eclipse-workspace\\PassMan\\xmlTests\\merry.xyt"));
+			anotherHandler.addUser("delete me", internalKey, 100, new File(System.getProperty("user.dir") + fileSep + "xmlTests" + fileSep + "merry.xyt"));
 			if(anotherHandler.checkUser("delete me")) {
 				System.out.println("User added");
 			}
@@ -119,9 +117,9 @@ public class XMLTest {
 			ArrayList<DomainInfo> list = person1.getDomainInfoArray();
 			SecureCharBuffer pass = new SecureCharBuffer();
 			pass.append("somehashedpassword");
-			list.add(new DomainInfo("www.google.com", "generic.user@gmail.com", pass));
-			list.add(new DomainInfo("www.yahoo.com", "generic.user@yahoo.com", pass));
-			list.add(new DomainInfo("www.canvas.edu", "canvas", pass));
+			list.add(new DomainInfo("google", "generic.user@gmail.com", pass));
+			list.add(new DomainInfo("yahoo", "generic.user@yahoo.com", pass));
+			list.add(new DomainInfo("canvas", "canvas", pass));
 			DomainHandler domHandler = new DomainHandler(person1.getFileLocation().toString(), key, salt);
 			domHandler.writeDomains(list);
 			

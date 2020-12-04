@@ -1,4 +1,4 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.model;
 
 import java.util.ArrayList;
 import java.io.File;
@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,8 +24,14 @@ public class DomainHandler extends DatabaseHandler {
 	private File database;
 	private SecureCharBuffer master;
 	private String salt;
-	
-	// Constructor --------------------------------------------------------
+
+	/**
+	 * Constructor
+	 * @param filepath
+	 * @param key User's master key
+	 * @param salt User's username
+	 * @throws IOException
+	 */
 	public DomainHandler(String filepath, SecureCharBuffer key, String salt) throws IOException {
 		super(new File(filepath), File.createTempFile("sjsu", ".xml"));
 		this.master = key;

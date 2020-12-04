@@ -1,4 +1,4 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.utility;
 
 import io.github.novacrypto.SecureCharBuffer;
 
@@ -6,10 +6,15 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
-public class ClipboardManager implements Runnable { // TODO multithread this
+public class ClipboardManager implements Runnable {
     private int clearTime;
     private SecureCharBuffer charBuffer;
 
+    /**
+     * Constructor
+     * @param charBuffer
+     * @param clearTime
+     */
     public ClipboardManager(SecureCharBuffer charBuffer, int clearTime) {
         this.clearTime = clearTime;
         this.charBuffer = charBuffer;
@@ -30,20 +35,29 @@ public class ClipboardManager implements Runnable { // TODO multithread this
         }
     }
 
+    /**
+     * Find operating system type
+     * @return OS enum
+     */
     private static OS getOSType(){
         if (System.getProperty("os.name").startsWith("Linux")) return OS.LINUX;
         else if (System.getProperty("os.name").startsWith("Windows")) return OS.WINDOWS;
         else return OS.MAC;
     }
 
+    /**
+     * SecureCharBuffer setter
+     * @param charBuffer password to be used to copy
+     */
     public void setCharBuffer(SecureCharBuffer charBuffer) {
         this.charBuffer = charBuffer;
     }
 
-    public void setClearTime(int clearTime) {
-        this.clearTime = clearTime;
-    }
-
+    /**
+     * Windows specific copy to clipboard
+     * @param password
+     * @param clearTime
+     */
     private static void windowsCopyToClip(String password, int clearTime) {
         try {
             StringSelection ss = new StringSelection(password);
@@ -60,6 +74,12 @@ public class ClipboardManager implements Runnable { // TODO multithread this
         }
     }
 
+    /**
+     * Linux specific copy to clipboard function
+     * Requires xclip
+     * @param password
+     * @param clearTime
+     */
     private static void linuxCopyToClip(String password, int clearTime) {
         try {
             Runtime run = Runtime.getRuntime();
@@ -73,6 +93,11 @@ public class ClipboardManager implements Runnable { // TODO multithread this
         }
     }
 
+    /**
+     * MacOS specific copy to clipboard function
+     * @param password
+     * @param clearTime
+     */
     private static void macCopyToClip(String password, int clearTime) { // UNTESTED
         try {
             Runtime run = Runtime.getRuntime();
@@ -91,6 +116,9 @@ public class ClipboardManager implements Runnable { // TODO multithread this
         copyToClip(this.charBuffer, this.clearTime);
     }
 
+    /**
+     * Operating system enum
+     */
     private enum OS {
         LINUX,
         WINDOWS,

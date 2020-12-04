@@ -1,4 +1,4 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.model;
 
 import java.util.ArrayList;
 import java.io.File;
@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import edu.sjsu.Team15.HandlerConstants;
+import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -146,7 +148,7 @@ public class UserHandler extends DatabaseHandler {
 		FileInputStream stream;
 		Boolean found = false;
 		try {
-			database = decrypt(master, salt);
+			database = decrypt(null, null);
 			stream = new FileInputStream(database);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
@@ -379,12 +381,10 @@ public class UserHandler extends DatabaseHandler {
 
 	/**
 	 * Create a encrypted file for the database of users
-	 * @param username The salt used to encrypt the file
-	 * @param password The buffer used to encrypt the file
 	 * @param secureFileLocation The location where the encrypted file is saved
 	 * @return The file location
 	 */
-	public static File createNewUserFile(String username, SecureCharBuffer password, File secureFileLocation) {
+	public static File createNewUserFile(File secureFileLocation) {
 		// Prepare file to write
 		Document doc;
 		try {
@@ -426,7 +426,7 @@ public class UserHandler extends DatabaseHandler {
         // Encrypt to the provided location
 		try {
 	        byte[] fileBytes = Files.readAllBytes(temporaryFile.toPath());
-	        byte[] encryptedBytes = CryptoUtil.encrypt(password, username, fileBytes);
+	        byte[] encryptedBytes = CryptoUtil.universalEncrypt(fileBytes);
 	        FileOutputStream stream = new FileOutputStream(secureFileLocation.getAbsoluteFile(), false);
 			stream.write(encryptedBytes);
 			stream.close();

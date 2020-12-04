@@ -1,4 +1,7 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.view;
+
+import edu.sjsu.Team15.Message;
+import io.github.novacrypto.SecureCharBuffer;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -8,18 +11,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class Login { //TODO
+public class LoginView extends JFrame{ //TODO
     JButton login, newAcc;
     LoginButtonPress loginButtonListener;
     LinkedBlockingQueue<Message> queue;
+    JLabel username, password;
+    JTextField un;
+    JPasswordField pass;
+    JFrame frame = this;
 
-    public Login(LinkedBlockingQueue<Message> queue){
+    public LoginView(LinkedBlockingQueue<Message> queue){
         //variables for text field and label
-        JLabel username, password;
-        JTextField un, pass;
-
+        this.queue = queue;
         //making a frame
-        JFrame f = new JFrame("Password Manager");
 
         //creating buttons
         login = new JButton("Login");
@@ -37,46 +41,66 @@ public class Login { //TODO
         //creating text fields
         un = new JTextField(10);
         un.setBounds(150,50, 120,40);
-        pass = new JTextField(10);
+        pass = new JPasswordField(10);
         pass.setBounds(150,100, 120,40);
 
         //setting buttons
         login.setBounds(75, 160, 90, 40);
         newAcc.setBounds(170, 160, 120, 40);
 
-        //add label
-        f.add(username);
-        f.add(password);
-
-        //add text field
-        f.add(un);
-        f.add(pass);
-
-        //add buttons
-        f.add(login);
-        f.add(newAcc);
-
-        //set the frame
-        f.setSize(350, 270);
-        f.setLayout(null);
-        f.setVisible(true);
-
+        //set listener
         login.addActionListener(loginButtonListener);
         newAcc.addActionListener(loginButtonListener);
+
+        //add label
+        frame.add(username);
+        frame.add(password);
+
+        //add text field
+        frame.add(un);
+        frame.add(pass);
+
+        //add buttons
+        frame.add(login);
+        frame.add(newAcc);
+
+        //set the frame
+        frame.setSize(350, 270);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+        frame.setVisible(true);
     }
 
     private class LoginButtonPress implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
+            Message message = new Message();
+            // get transfer password from char[] to secureCharBuffer
+            SecureCharBuffer charBuffer = new SecureCharBuffer();
+            for (char c : pass.getPassword()) {
+                charBuffer.append(c);
+                c = '\0'; // null password as we append
+            }
+
+            // do nothing if login is empty.
+            if (charBuffer.length() == 0 || un.getText() == "") return;
+
+
+            // put data into message
+            message.setUsername(un.getText());
+            message.setPassword(charBuffer);
+
+            // clear text fields
+            un.setText("");
+            pass.setText("");
+
+
             Object source = actionEvent.getSource();
-            if (source == login) { // TODO BUTTONS
-                Message message = new Message();
+            if (source == login) {
                 message.action = Message.Action.LOGIN;
                 queue.add(message);
             }
             if (source == newAcc) {
-                // TODO setup message
-                Message message = new Message();
                 message.action = Message.Action.NEW_USER;
                 queue.add(message);
             }

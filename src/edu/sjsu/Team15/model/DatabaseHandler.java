@@ -1,12 +1,13 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.model;
 
-/**
+/*
  * Sources:
  * https://mkyong.com/java/how-to-convert-file-into-an-array-of-bytes/
  * https://docs.oracle.com/javase/7/docs/api/java/io/File.html
  * https://stackoverflow.com/questions/4350084/byte-to-file-in-java
  */
 
+import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 import java.nio.file.Files;
 import java.io.*;
@@ -20,7 +21,7 @@ public abstract class DatabaseHandler {
 	 * Both file locations must be provided and are used for encrypted and
 	 * decrypted file locations.
 	 * 
-	 * @param pathname The database file location
+	 * @param dataFile The database file location
 	 * @param tempFile The file location for the decrypted file
 	 */
 	public DatabaseHandler(File dataFile, File tempFile) {
@@ -109,7 +110,7 @@ public abstract class DatabaseHandler {
 	 * Destroys the decrypted file for safety. Call this whenever the file is no
 	 * longer needed. File location stays, however, so if another tmp file needs
 	 * to be made, it can be made with a decrypt() call.
-	 * @return
+	 * @return returns file if failed
 	 */
 	public File destroyActiveFile() {
 		try {

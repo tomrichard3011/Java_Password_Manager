@@ -1,5 +1,6 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.view;
 
+import edu.sjsu.Team15.model.DomainInfo;
 import io.github.novacrypto.SecureCharBuffer;
 
 import javax.swing.*;

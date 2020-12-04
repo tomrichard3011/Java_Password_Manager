@@ -1,5 +1,6 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.model;
 
+import edu.sjsu.Team15.utility.PasswordGenerator;
 import io.github.novacrypto.SecureCharBuffer;
 
 import javax.imageio.ImageIO;
@@ -15,10 +16,11 @@ public class DomainInfo {
     private Date timeStamp;
     private String username;
     private SecureCharBuffer password;
+    private String fileSep = System.getProperty("file.separator");
 
     public DomainInfo(String domain, String username, SecureCharBuffer password) {
         this.domain = domain;
-        this.logoPath = System.getProperty("user.dir") + "/images/" + domain + ".png";
+        this.logoPath = System.getProperty("user.dir") + fileSep + "images" + fileSep + domain + ".png";
         this.timeStamp = new Date();
         this.username = username;
         this.password = password; // TODO PASSWORD CHECK
@@ -90,7 +92,7 @@ public class DomainInfo {
 
     // checks for existence of directory, if it doesnt exist, make a new directory
     private static void checkImageDirectory(){
-        File file = new File(System.getProperty("user.dir") + "/images");
+        File file = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "images");
         if (!file.exists()) {
             if (!file.mkdir()) {
                 System.exit(1); //TODO ERROR FILE DIRECTORY COULD NOT BE CREATED

@@ -1,5 +1,8 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.view;
 
+import edu.sjsu.Team15.model.DomainInfo;
+import edu.sjsu.Team15.Message;
+import edu.sjsu.Team15.utility.PasswordGenerator;
 import io.github.novacrypto.SecureCharBuffer;
 
 import javax.swing.*;
@@ -141,8 +144,7 @@ public class CreateDomainInfoView extends JFrame{
                 char[] password = passField.getPassword();
                 SecureCharBuffer charBuffer = new SecureCharBuffer();
 
-                // transfer data to new stuff
-
+                // transfer data to new character buffer
                 if (random) {
                     charBuffer = PasswordGenerator.generatePassword();
                 }

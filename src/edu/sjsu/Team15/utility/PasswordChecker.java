@@ -1,4 +1,4 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.utility;
 
 import java.util.Calendar;
 import java.util.Date;

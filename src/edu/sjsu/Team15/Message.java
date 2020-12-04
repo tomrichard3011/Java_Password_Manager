@@ -1,9 +1,10 @@
 package edu.sjsu.Team15;
 
+import edu.sjsu.Team15.model.DomainInfo;
 import io.github.novacrypto.SecureCharBuffer;
 
 public class Message {
-    Action action;
+    public Action action;
     private DomainInfo domainInfo;
     private String username;
     private SecureCharBuffer password;
@@ -41,7 +42,7 @@ public class Message {
         this.clearTime = clearTime;
     }
 
-    enum Action {
+    public enum Action {
         EDIT_DOMAININFO,
         DELETE_DOMAININFO,
         COPY_PASSWORD,
@@ -54,5 +55,6 @@ public class Message {
         ADD_DOMAININFO,
         LOGIN,
         NEW_USER,
+        EXIT
     }
 }
