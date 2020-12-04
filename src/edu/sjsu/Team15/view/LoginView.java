@@ -22,7 +22,7 @@ public class LoginView extends JFrame{ //TODO
 
     public LoginView(LinkedBlockingQueue<Message> queue){
         //variables for text field and label
-
+        this.queue = queue;
         //making a frame
 
         //creating buttons
@@ -66,6 +66,7 @@ public class LoginView extends JFrame{ //TODO
 
         //set the frame
         frame.setSize(350, 270);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
         frame.setVisible(true);
     }
@@ -95,12 +96,11 @@ public class LoginView extends JFrame{ //TODO
 
 
             Object source = actionEvent.getSource();
-            if (source == login) { // TODO BUTTONS
+            if (source == login) {
                 message.action = Message.Action.LOGIN;
                 queue.add(message);
             }
             if (source == newAcc) {
-                // TODO setup message
                 message.action = Message.Action.NEW_USER;
                 queue.add(message);
             }

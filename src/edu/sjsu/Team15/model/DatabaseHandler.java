@@ -7,6 +7,7 @@ package edu.sjsu.Team15.model;
  * https://stackoverflow.com/questions/4350084/byte-to-file-in-java
  */
 
+import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 import java.nio.file.Files;
 import java.io.*;
@@ -31,9 +32,15 @@ public abstract class DatabaseHandler {
 	
 	public File encrypt(SecureCharBuffer sk, String username) {
 		try {
+			
 			// Transform decrypted file to encrypted byte array
 			byte[] fileBytes = Files.readAllBytes(activeFile.toPath());
-			byte[] encryptedBytes = CryptoUtil.encrypt(sk, username, fileBytes);
+			byte[] encryptedBytes;
+			if(sk != null && username != null) {
+				encryptedBytes = CryptoUtil.encrypt(sk, username, fileBytes);
+			} else {
+				encryptedBytes = CryptoUtil.universalEncrypt(fileBytes);
+			}
 			// Save the encrypted file
 			FileOutputStream stream = new FileOutputStream(secureFile.getAbsoluteFile(), false);
 			stream.write(encryptedBytes);
@@ -49,7 +56,13 @@ public abstract class DatabaseHandler {
 		try {
 			// Transform encrypted file to unencrypted byte array
 			byte[] fileBytes = Files.readAllBytes(secureFile.toPath());
-			byte[] unencryptedBytes = CryptoUtil.decrypt(sk, username, fileBytes);
+			byte[] unencryptedBytes;
+			if(sk != null && username != null) {
+				unencryptedBytes = CryptoUtil.decrypt(sk, username, fileBytes);
+			} else {
+				unencryptedBytes = CryptoUtil.universalDecrypt(fileBytes);
+			}
+			
 			// Create new unencrypted file
 			FileOutputStream stream = new FileOutputStream(activeFile.getAbsoluteFile(), false);
 			stream.write(unencryptedBytes);

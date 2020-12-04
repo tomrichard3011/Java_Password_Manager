@@ -2,7 +2,8 @@ package edu.sjsu.Team15.controller;
 
 
 import edu.sjsu.Team15.*;
-import edu.sjsu.Team15.model.ClipboardManager;
+import edu.sjsu.Team15.model.DatabaseFunctions;
+import edu.sjsu.Team15.utility.ClipboardManager;
 import edu.sjsu.Team15.model.DomainInfo;
 import edu.sjsu.Team15.model.User;
 import edu.sjsu.Team15.view.*;
@@ -12,14 +13,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MainController {
     User user;
+    MainView mainView;
     DomainInfoView domainInfoView;
     DomainInfoListView domainInfoListView;
     LinkedBlockingQueue<Message> queue;
 
-    public MainController(User user, DomainInfoView domainInfoView, DomainInfoListView domainInfoListView, LinkedBlockingQueue<Message> queue)  {
+    public MainController(User user, MainView mainView, LinkedBlockingQueue<Message> queue)  {
         this.user = user;
-        this.domainInfoView = domainInfoView;
-        this.domainInfoListView = domainInfoListView;
+        this.mainView = mainView;
+        this.domainInfoView = mainView.domainInfoView;
+        this.domainInfoListView = mainView.domainInfoListView;
         this.queue = queue;
     }
 
@@ -117,16 +120,23 @@ public class MainController {
         domainInfoListView.updateList();
     }
 
-    private void settings_menu(){ // TODO
+    private void settings_menu(){ // TODO update user data
         new SettingsView(queue);
     }
 
     private void add_domainInfo(Message message) { // TODO MAYBE SAVE HERE
         user.getDomainInfoArray().add(message.getDomainInfo());
         domainInfoListView.updateList();
+        saveData();
     }
 
-    private void exit(){
+    private void exit() {
+        System.out.println("exit");
+        saveData();
+        System.exit(0);
+    }
 
+    private void saveData() {
+        DatabaseFunctions.saveDomains(user);
     }
 }

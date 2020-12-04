@@ -1,4 +1,4 @@
-package edu.sjsu.Team15.model;
+package edu.sjsu.Team15.utility;
 
 import io.github.novacrypto.SecureCharBuffer;
 

@@ -1,7 +1,7 @@
 package JUnit4Tests;
 
-import edu.sjsu.Team15.model.PasswordChecker;
-import edu.sjsu.Team15.model.PasswordGenerator;
+import edu.sjsu.Team15.utility.PasswordChecker;
+import edu.sjsu.Team15.utility.PasswordGenerator;
 import io.github.novacrypto.SecureCharBuffer;
 import org.junit.*;
 

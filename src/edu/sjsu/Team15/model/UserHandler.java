@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import edu.sjsu.Team15.HandlerConstants;
+import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,18 +37,37 @@ import org.w3c.dom.Element;
 // XPath Parser: https://www.baeldung.com/java-xpath
 
 public class UserHandler extends DatabaseHandler {
-	// Constant: Perhaps move all constants to a single file to avoid losing track
 	private File database;
 	private SecureCharBuffer master;
 	private String salt;
 	
-	// Constructor ------------------------------------------------------------
-	public UserHandler(String filepath, SecureCharBuffer key, String salt) throws IOException {
+	// Constructors ------------------------------------------------------------
+	
+	/**
+	 * Create a handler with specific key & salt for encryption/decryption
+	 * @param filepath The file location for the encrypted file
+	 * @param key The key used for encryption
+	 * @param salt The salt used for encryption
+	 * @throws IOException
+	 */
+	public UserHandler(String filepath, SecureCharBuffer key, String salt) throws Exception {
 		super(new File(filepath), File.createTempFile("sjsu", ".xml"));
 		this.master = key;
 		this.salt = salt;
 		database = null;
-		//database = decrypt(key, salt);
+		//throw new Exception("This constructor will become deprecated in the next update");
+	}
+	
+	/**
+	 * Create a handler using the default universal encryption/decryption
+	 * @param filepath The file location for the encrypted file
+	 * @throws IOException
+	 */
+	public UserHandler(String filepath) throws IOException {
+		super(new File(filepath), File.createTempFile("sjsu", ".xml"));
+		this.master = null;
+		this.salt = null;
+		database = null;
 	}
 	
 	/**
@@ -62,6 +83,7 @@ public class UserHandler extends DatabaseHandler {
 	public User verifyUser(String username, SecureCharBuffer password) {
 		// Prepare the document to be parsed
 		try {
+			// Decrypt the file
 			database = decrypt(master, salt);
 			
 			// Debugging: Reading the file from temp directory
@@ -98,16 +120,11 @@ public class UserHandler extends DatabaseHandler {
 					System.out.print(elements.item(i).getNodeValue());
 					System.out.print(" :");
 					System.out.println(elements.item(i).getTextContent());
-					
-					if(elements.item(i).getTextContent().contains("\n")) {
-						System.out.print("Unusual behavior, but understandable");
-						System.out.println(elements.item(i).getTextContent().length());
-					}
 				}
 				System.out.println("-------------------------");
 				
-				String fileLoc = elements.item(3).getTextContent();
-				User currentUser = new User(username, password, Integer.parseInt(elements.item(2).getTextContent()), elements.item(3).getTextContent());
+				String fileLoc = elements.item(HandlerConstants.XMLPATH).getTextContent();
+				User currentUser = new User(username, password, Integer.parseInt(elements.item(HandlerConstants.XMLCLIP).getTextContent()), fileLoc);
 				DomainHandler domainHandler = new DomainHandler(fileLoc, currentUser.getMasterKey(), currentUser.getUsername());
 				currentUser.setDomainInfo(domainHandler.getDomains());
 				return currentUser;
@@ -131,17 +148,17 @@ public class UserHandler extends DatabaseHandler {
 		FileInputStream stream;
 		Boolean found = false;
 		try {
-			database = decrypt(master, salt);
+			database = decrypt(null, null);
 			stream = new FileInputStream(database);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
 			Document userXML = dbBuilder.parse(stream);
+			stream.close();
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			
 			// Search for the username and return if it's found or not
 			String query = "/Users/user[name='" + username + "']";
 			found = (Boolean) xpath.evaluate(query, userXML, XPathConstants.BOOLEAN);
-			stream.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -166,6 +183,7 @@ public class UserHandler extends DatabaseHandler {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
 			Document userXML = dbBuilder.parse(stream);
+			stream.close();
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			
 			// Retrieve the root node and append DEFAULT_CLIPBOARD_TIME
@@ -174,12 +192,10 @@ public class UserHandler extends DatabaseHandler {
 			Node root = (Node) xpath.evaluate(query, userXML, XPathConstants.NODE);
 			Node newUser = createUserNode(userXML, username, loosePass.toString(), clipboardTime, secureFile.getAbsolutePath());
 			root.appendChild(newUser);
-			stream.close();
 			
 			// Rewrite a new user file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        Transformer transformer = transformerFactory.newTransformer();
-	        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
 	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 	        DOMSource source = new DOMSource(userXML);
@@ -196,8 +212,6 @@ public class UserHandler extends DatabaseHandler {
 				User currentUser = new User(clipboardTime, new ArrayList<DomainInfo>(), username, password);
 				secureFile = DomainHandler.createNewDomainFile(username, password, secureFile);
 				currentUser.setFileLocation(secureFile);
-				// Build domain file
-				
 				return currentUser;
 			}
 		} catch (Exception e) {
@@ -205,17 +219,172 @@ public class UserHandler extends DatabaseHandler {
 			return null;
 		}
 	}
+
+	/**
+	 * Edit the user on the user file, and fix the domain file from the change in user credentials
+	 * @param username The salt used in encryption
+	 * @param password The char buffer used in encryption
+	 * @param name The HandlerConstant of the element that needs to change
+	 * @param value The value that will be replacing the original file content
+	 * @return Whether the edit was successful or not
+	 */
+	public Boolean editUser(String username, SecureCharBuffer password, int name, String value) {
+		// Prepare the document to be parsed
+		try {
+			// Decrypt the file
+			database = decrypt(master, salt);
+			
+			// Debugging: Reading the file from temp directory
+			Path path = Paths.get(database.getAbsolutePath());
+			String template = Files.readString(path);
+			System.out.println("Before------------------");
+			System.out.println(template);
+			System.out.println("Before------------------");
+			
+			FileInputStream stream = new FileInputStream(database);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
+			Document userXML = dbBuilder.parse(stream);
+			XPath xpath = XPathFactory.newInstance().newXPath();
+			
+			// Check for the correct username and password combination
+			CharSequence loosePass = password.toStringAble();
+			String query = "/Users/user[name='" + username + "' and pass='" + loosePass + "']";
+			Node node = (Node) xpath.compile(query).evaluate(userXML, XPathConstants.NODE);
+			stream.close();
+			
+			if(node != null && node.hasChildNodes()) {
+				// Prepare to fix the domain file (Change user, pass, or file location)
+				NodeList elements = node.getChildNodes();
+				SecureCharBuffer sec = new SecureCharBuffer();
+				sec.append(elements.item(HandlerConstants.XMLPASS).getTextContent());
+				DomainHandler originDomain = new DomainHandler(elements.item(HandlerConstants.XMLPATH).getTextContent(),
+						sec, elements.item(HandlerConstants.XMLUSER).getTextContent());
+				ArrayList<DomainInfo> tempList = originDomain.getDomains();
+				
+				// Replace the element
+				elements.item(name).setTextContent(value);
+				
+				// Rewrite the domain file
+				sec = new SecureCharBuffer();
+				sec.append(elements.item(HandlerConstants.XMLPASS).getTextContent());
+				DomainHandler replaceDomain = new DomainHandler(elements.item(HandlerConstants.XMLPATH).getTextContent(),
+						sec, elements.item(HandlerConstants.XMLUSER).getTextContent());
+				replaceDomain.writeDomains(tempList);
+				
+				// Rewrite the xml to the temp directory
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		        Transformer transformer = transformerFactory.newTransformer();
+		        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+		        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+		        DOMSource source = new DOMSource(userXML);
+		        StreamResult file = new StreamResult(database);
+		        transformer.transform(source, file);
+				
+		        // Encrypt the file to the correct location
+		        setActiveFile(database.getAbsolutePath());
+		        if(encrypt(master, salt) == null) {
+					return false;
+				} else {
+					// Debugging: Reading the file from temp directory
+					Path p = Paths.get(database.getAbsolutePath());
+					String t = Files.readString(p);
+					System.out.println("After------------------");
+					System.out.println(t);
+					System.out.println("After------------------");
+					return true;
+				}
+		        
+			} else {
+				// Node not found
+				return false;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
-	// Delete user TODO: If requested
+	// Delete user
+	public Boolean deleteUser(String username, SecureCharBuffer password) {
+		// Prepare the document to be parsed
+		try {
+			// Decrypt the file
+			database = decrypt(master, salt);
+			
+			// Debugging: Reading the file from temp directory
+			Path path = Paths.get(database.getAbsolutePath());
+			String template = Files.readString(path);
+			System.out.println("Before------------------");
+			System.out.println(template);
+			System.out.println("Before------------------");
+			
+			FileInputStream stream = new FileInputStream(database);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
+			Document userXML = dbBuilder.parse(stream);
+			XPath xpath = XPathFactory.newInstance().newXPath();
+			
+			// Check for the correct username and password combination
+			CharSequence loosePass = password.toStringAble();
+			String query = "/Users/user[name='" + username + "' and pass='" + loosePass + "']";
+			Node node = (Node) xpath.compile(query).evaluate(userXML, XPathConstants.NODE);
+			stream.close();
+			
+			if(node != null && node.hasChildNodes()) {
+				// Delete the user from the internal node list
+				NodeList elements = node.getChildNodes();
+				String originDomain = elements.item(HandlerConstants.XMLPATH).getTextContent();
+				
+				// Delete the user from the internal node list
+				// Source: https://stackoverflow.com/questions/3717215/remove-xml-node-using-java-parser
+				node.getParentNode().removeChild(node);
+				
+				// Delete the associated domain file
+				File origin = new File(originDomain);
+				origin.delete();
+				
+				// Rewrite the xml to the temp directory
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		        Transformer transformer = transformerFactory.newTransformer();
+		        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+		        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+		        DOMSource source = new DOMSource(userXML);
+		        StreamResult file = new StreamResult(database);
+		        transformer.transform(source, file);
+				
+		        // Encrypt the file to the correct location
+		        setActiveFile(database.getAbsolutePath());
+		        if(encrypt(master, salt) == null) {
+					return false;
+				} else {
+					// Debugging: Reading the file from temp directory
+					Path p = Paths.get(database.getAbsolutePath());
+					String t = Files.readString(p);
+					System.out.println("After------------------");
+					System.out.println(t);
+					System.out.println("After------------------");
+					return true;
+				}
+		        
+			} else {
+				// Node not found
+				return false;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/**
 	 * Create a encrypted file for the database of users
-	 * @param username The salt used to encrypt the file
-	 * @param password The buffer used to encrypt the file
 	 * @param secureFileLocation The location where the encrypted file is saved
 	 * @return The file location
 	 */
-	public static File createNewUserFile(String username, SecureCharBuffer password, File secureFileLocation) {
+	public static File createNewUserFile(File secureFileLocation) {
 		// Prepare file to write
 		Document doc;
 		try {
@@ -235,7 +404,6 @@ public class UserHandler extends DatabaseHandler {
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        transformer = transformerFactory.newTransformer();
-	        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
 	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 	        source = new DOMSource(doc);
@@ -258,7 +426,7 @@ public class UserHandler extends DatabaseHandler {
         // Encrypt to the provided location
 		try {
 	        byte[] fileBytes = Files.readAllBytes(temporaryFile.toPath());
-	        byte[] encryptedBytes = CryptoUtil.encrypt(password, username, fileBytes);
+	        byte[] encryptedBytes = CryptoUtil.universalEncrypt(fileBytes);
 	        FileOutputStream stream = new FileOutputStream(secureFileLocation.getAbsoluteFile(), false);
 			stream.write(encryptedBytes);
 			stream.close();

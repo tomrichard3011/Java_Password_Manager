@@ -11,12 +11,12 @@ import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MainView extends JFrame {
-    DomainInfoListView domainInfoListView;
-    DomainInfoView domainInfoView;
-    JButton addDomainButton = new JButton("Add Domain");
-    JButton settingsButton = new JButton("Settings");
-    ButtonPress buttonPressListener = new ButtonPress();
-    LinkedBlockingQueue<Message> queue;
+    public final DomainInfoListView domainInfoListView;
+    public final DomainInfoView domainInfoView;
+    private final JButton addDomainButton = new JButton("Add Domain");
+    private final JButton settingsButton = new JButton("Settings");
+    private final ButtonPress buttonPressListener = new ButtonPress();
+    private final LinkedBlockingQueue<Message> queue;
 
     public MainView(DomainInfoListView domainInfoListView, DomainInfoView domainInfoView, LinkedBlockingQueue<Message> queue) {
         this.domainInfoListView = domainInfoListView;
@@ -37,7 +37,7 @@ public class MainView extends JFrame {
 
         this.setPreferredSize(new Dimension(500, 450));
         this.setResizable(false);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
     }
@@ -66,6 +66,13 @@ public class MainView extends JFrame {
                 SpringLayout.SOUTH, addDomainButton);
         layout.putConstraint(SpringLayout.WEST, settingsButton, 10,
                 SpringLayout.WEST, this);
+    }
+
+    @Override
+    public void dispose() {
+        Message message = new Message();
+        message.action = Message.Action.EXIT;
+        queue.add(message);
     }
 
     private class ButtonPress implements ActionListener {

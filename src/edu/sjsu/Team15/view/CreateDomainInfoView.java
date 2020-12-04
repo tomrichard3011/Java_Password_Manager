@@ -2,7 +2,7 @@ package edu.sjsu.Team15.view;
 
 import edu.sjsu.Team15.model.DomainInfo;
 import edu.sjsu.Team15.Message;
-import edu.sjsu.Team15.model.PasswordGenerator;
+import edu.sjsu.Team15.utility.PasswordGenerator;
 import io.github.novacrypto.SecureCharBuffer;
 
 import javax.swing.*;

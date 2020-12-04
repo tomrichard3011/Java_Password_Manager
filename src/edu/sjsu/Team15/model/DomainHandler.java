@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -107,12 +108,10 @@ public class DomainHandler extends DatabaseHandler {
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        Transformer transformer = transformerFactory.newTransformer();
-	        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
 	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 	        DOMSource source = new DOMSource(doc);
 	        
-	        // I have no idea if this overwrites, I guess we'll find out the hard way
 	        database = File.createTempFile("sjsu", ".xml");
 	        StreamResult file = new StreamResult(database);
 	        transformer.transform(source, file);

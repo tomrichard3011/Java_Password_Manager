@@ -1,4 +1,4 @@
-package edu.sjsu.Team15.model;
+package edu.sjsu.Team15.utility;
 
 import io.github.novacrypto.SecureCharBuffer;
 import net.codesup.utilities.basen.AnyBaseEncoder;
@@ -17,7 +17,7 @@ import java.security.spec.KeySpec;
 
 public class CryptoUtil {
     /**
-     * SHA3-256
+     * SHA3-256 hash function
      * @param salt salt used for hashing
      * @param input data to hash
      * @return always returns 32 byte hash
@@ -84,6 +84,7 @@ public class CryptoUtil {
         return null;
     }
 
+
     /**
      * Encryption using user specific data as encryption key
      * @param input plaintext data as byte array
@@ -92,7 +93,7 @@ public class CryptoUtil {
     // TODO NOT SECURE, need a reliable way of creating machine specific keys
     public static byte[] universalEncrypt(byte[] input) {
         SecureCharBuffer charBuffer = new SecureCharBuffer();
-        charBuffer.append(System.getProperty("user.home"));
+        charBuffer.append(System.getProperty("user.dir"));
 
         return encrypt(charBuffer, System.getProperty("os.name"), input);
     }
@@ -105,7 +106,7 @@ public class CryptoUtil {
     // TODO NOT SECURE, need a reliable way of creating machine specific keys
     public static byte[] universalDecrypt(byte[] input) {
         SecureCharBuffer charBuffer = new SecureCharBuffer();
-        charBuffer.append(System.getProperty("user.home"));
+        charBuffer.append(System.getProperty("user.dir"));
 
         return decrypt(charBuffer, System.getProperty("os.name"), input);
     }

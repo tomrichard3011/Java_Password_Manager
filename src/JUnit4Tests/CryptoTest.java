@@ -1,6 +1,6 @@
 package JUnit4Tests;
 
-import edu.sjsu.Team15.model.CryptoUtil;
+import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 
 import org.junit.*;
