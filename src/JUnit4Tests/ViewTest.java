@@ -1,3 +1,5 @@
+package JUnit4Tests;
+
 import edu.sjsu.Team15.*;
 import edu.sjsu.Team15.controller.MainController;
 import edu.sjsu.Team15.model.DomainInfo;
@@ -27,6 +29,7 @@ public class ViewTest {
         domainInfoArrayList.add(instagram);
         domainInfoArrayList.add(linkedin);
 
+        // stuff needed for initialization
         User user = new User(5, domainInfoArrayList, "Jake", new SecureCharBuffer());
         LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<>();
 
@@ -34,11 +37,12 @@ public class ViewTest {
 
 
         // LINKING EVERYTHING TOGETHER
-        DomainInfoView domainInfoView = new DomainInfoView(facebook, queue);
+        DomainInfoView domainInfoView = new DomainInfoView(user.getDomainInfoArray().get(0), queue);
         DomainInfoListView domainInfoListView = new DomainInfoListView(user.getDomainInfoArray(), domainInfoView); // link JList to domaininfoview
 
-        MainController mainController = new MainController(user, domainInfoView, domainInfoListView, queue);
+
         JFrame frame = new MainView(domainInfoListView, domainInfoView, queue);
+        MainController mainController = new MainController(user, domainInfoView, domainInfoListView, queue);
         mainController.run();
     }
 }

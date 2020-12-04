@@ -55,5 +55,6 @@ public class Message {
         ADD_DOMAININFO,
         LOGIN,
         NEW_USER,
+        EXIT
     }
 }

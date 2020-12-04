@@ -25,13 +25,13 @@ public class XMLTest {
 		
 		
 		// XML File Constants: User File
-		String userFilepath = "C:\\Users\\Guerr\\eclipse-workspace\\PassMan\\xmlTests\\user.xyt";
+		String userFilepath = System.getProperty("user.dir") + "\\xmlTests\\user.xyt";
 		String userSalt = "user";
 		SecureCharBuffer internalKey = new SecureCharBuffer();
 		internalKey.append("special");
 		
 		// XML File Constants: Domain File
-		String filepath = "C:\\Users\\Guerr\\eclipse-workspace\\PassMan\\xmlTests\\domain.xyt";
+		String filepath = System.getProperty("user.dir") + "\\xmlTests\\domain.xyt";
 		String salt = "username";
 		SecureCharBuffer key = new SecureCharBuffer();
 		key.append("password");

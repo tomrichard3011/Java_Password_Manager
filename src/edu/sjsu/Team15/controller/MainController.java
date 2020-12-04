@@ -64,6 +64,8 @@ public class MainController {
                 case ADD_DOMAININFO:
                     add_domainInfo(message);
                     break;
+                case EXIT:
+                    exit();
                 default:
                     throw new IllegalStateException("Unexpected value: " + message.action);
             }
@@ -122,5 +124,9 @@ public class MainController {
     private void add_domainInfo(Message message) { // TODO MAYBE SAVE HERE
         user.getDomainInfoArray().add(message.getDomainInfo());
         domainInfoListView.updateList();
+    }
+
+    private void exit(){
+
     }
 }
