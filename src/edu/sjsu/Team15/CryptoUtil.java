@@ -64,7 +64,12 @@ public class CryptoUtil {
         }
         return null;
     }
-
+    
+    /**
+     * Provides a fixed byte encryption procedure, specifically for the main user file
+     * @param input The byte array to be encrypted
+     * @return The encrypted byte array
+     */
     public static byte[] universalEncrypt(byte[] input) {
         SecureCharBuffer charBuffer = new SecureCharBuffer();
         charBuffer.append(System.getProperty("user.home"));
@@ -72,6 +77,11 @@ public class CryptoUtil {
         return encrypt(charBuffer, System.getProperty("os.name"), input);
     }
 
+    /**
+     * Provides a fixed byte decryption procedure, specifically for the main user file
+     * @param input The byte array to be decrypted
+     * @return The decrypted byte array
+     */
     public static byte[] universalDecrypt(byte[] input) {
         SecureCharBuffer charBuffer = new SecureCharBuffer();
         charBuffer.append(System.getProperty("user.home"));
