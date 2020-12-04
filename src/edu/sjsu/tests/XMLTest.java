@@ -103,6 +103,16 @@ public class XMLTest {
 			}
 			
 			// Test 4: Add a user & remove the original user
+			anotherHandler.addUser("delete me", internalKey, 100, new File("C:\\Users\\Guerr\\eclipse-workspace\\PassMan\\xmlTests\\merry.xyt"));
+			if(anotherHandler.checkUser("delete me")) {
+				System.out.println("User added");
+			}
+			anotherHandler.deleteUser("delete me", internalKey);
+			if(!anotherHandler.checkUser("delete me")) {
+				System.out.println("User deleted");
+			} else {
+				throw new Exception("Delete failed.");
+			}
 			
 			// Test DomainHandler
 			User person1 = anotherHandler.verifyUser(salt, key);

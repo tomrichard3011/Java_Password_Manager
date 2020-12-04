@@ -25,9 +25,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-// Constants: Add to an Enum file
-
-
 /**
  * Currently not working: Do not attempt to run, finalized function declarations will be different
  * Look to DomainHandler for a more complete class
@@ -308,6 +305,77 @@ public class UserHandler extends DatabaseHandler {
 	}
 	
 	// Delete user
+	public Boolean deleteUser(String username, SecureCharBuffer password) {
+		// Prepare the document to be parsed
+		try {
+			// Decrypt the file
+			database = decrypt(master, salt);
+			
+			// Debugging: Reading the file from temp directory
+			Path path = Paths.get(database.getAbsolutePath());
+			String template = Files.readString(path);
+			System.out.println("Before------------------");
+			System.out.println(template);
+			System.out.println("Before------------------");
+			
+			FileInputStream stream = new FileInputStream(database);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
+			Document userXML = dbBuilder.parse(stream);
+			XPath xpath = XPathFactory.newInstance().newXPath();
+			
+			// Check for the correct username and password combination
+			CharSequence loosePass = password.toStringAble();
+			String query = "/Users/user[name='" + username + "' and pass='" + loosePass + "']";
+			Node node = (Node) xpath.compile(query).evaluate(userXML, XPathConstants.NODE);
+			stream.close();
+			
+			if(node != null && node.hasChildNodes()) {
+				// Delete the user from the internal node list
+				NodeList elements = node.getChildNodes();
+				String originDomain = elements.item(HandlerConstants.XMLPATH).getTextContent();
+				
+				// Delete the user from the internal node list
+				// Source: https://stackoverflow.com/questions/3717215/remove-xml-node-using-java-parser
+				node.getParentNode().removeChild(node);
+				
+				// Delete the associated domain file
+				File origin = new File(originDomain);
+				origin.delete();
+				
+				// Rewrite the xml to the temp directory
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		        Transformer transformer = transformerFactory.newTransformer();
+		        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+		        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+		        DOMSource source = new DOMSource(userXML);
+		        StreamResult file = new StreamResult(database);
+		        transformer.transform(source, file);
+				
+		        // Encrypt the file to the correct location
+		        setActiveFile(database.getAbsolutePath());
+		        if(encrypt(master, salt) == null) {
+					return false;
+				} else {
+					// Debugging: Reading the file from temp directory
+					Path p = Paths.get(database.getAbsolutePath());
+					String t = Files.readString(p);
+					System.out.println("After------------------");
+					System.out.println(t);
+					System.out.println("After------------------");
+					return true;
+				}
+		        
+			} else {
+				// Node not found
+				return false;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/**
 	 * Create a encrypted file for the database of users
