@@ -2,13 +2,14 @@ package edu.sjsu.Team15.controller;
 
 
 import edu.sjsu.Team15.*;
-import edu.sjsu.Team15.model.DatabaseFunctions;
+import edu.sjsu.Team15.utility.DatabaseFunctions;
 import edu.sjsu.Team15.utility.ClipboardManager;
 import edu.sjsu.Team15.model.DomainInfo;
 import edu.sjsu.Team15.model.User;
 import edu.sjsu.Team15.view.*;
 import io.github.novacrypto.SecureCharBuffer;
 
+import javax.xml.crypto.Data;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MainController {
@@ -49,12 +50,12 @@ public class MainController {
                 case GENERATE_PASSWORD:
                     generate(message);
                     break;
-                case SET_USERNAME: // TODO EDIT DATABASE ENTRIES
-                    set_username(message);
-                    break;
-                case SET_PASSWORD:
-                    set_password(message);
-                    break;
+//                case SET_USERNAME: // TODO EDIT DATABASE ENTRIES
+//                    set_username(message);
+//                    break;
+//                case SET_PASSWORD:
+//                    set_password(message);
+//                    break;
                 case SET_CLEARTIME:
                     set_clearTime(message);
                     break;
@@ -90,7 +91,6 @@ public class MainController {
 
     private void copy(Message message) {
         System.out.println("Copy");
-
         SecureCharBuffer pass = message.getDomainInfo().getPassword();
         ClipboardManager cbManager = new ClipboardManager(pass, user.getClipboardClearTime());
         new Thread(cbManager).start();
@@ -102,17 +102,18 @@ public class MainController {
         message.getDomainInfo().genNewPassword();
     }
 
-    private void set_username(Message message) { // TODO set credentials in Database
-        user.setUsername(message.getUsername());
-    }
-
-    private void set_password(Message message) { // TODO set credentials in Database
-        user.setMasterKey(message.getPassword());
-    }
+//    private void set_username(Message message) { // TODO set credentials in Database
+//        DatabaseFunctions.editUserName(user.getUsername(), user.getMasterKey(), message.getUsername());
+//    }
+//
+//    private void set_password(Message message) { // TODO set credentials in Database
+//        DatabaseFunctions.editUserPass(user.getUsername(), user.getMasterKey(), message.getPassword());
+//    }
 
     private void set_clearTime(Message message) {
         int newClearTime = message.getClearTime();
         user.setClipboardClearTime(newClearTime);
+        DatabaseFunctions.editUserClipTime(user.getUsername(), user.getMasterKey(), newClearTime);
     }
 
     private void create_domaininfo_menu() {
@@ -124,19 +125,15 @@ public class MainController {
         new SettingsView(queue);
     }
 
-    private void add_domainInfo(Message message) { // TODO MAYBE SAVE HERE
+    private void add_domainInfo(Message message) {
         user.getDomainInfoArray().add(message.getDomainInfo());
         domainInfoListView.updateList();
-        saveData();
+        DatabaseFunctions.saveDomains(user);
     }
 
     private void exit() {
         System.out.println("exit");
-        saveData();
-        System.exit(0);
-    }
-
-    private void saveData() {
         DatabaseFunctions.saveDomains(user);
+        System.exit(0);
     }
 }

@@ -2,7 +2,7 @@ package edu.sjsu.Team15.controller;
 
 
 import edu.sjsu.Team15.Message;
-import edu.sjsu.Team15.model.DatabaseFunctions;
+import edu.sjsu.Team15.utility.DatabaseFunctions;
 import edu.sjsu.Team15.model.User;
 import edu.sjsu.Team15.view.LoginView;
 import io.github.novacrypto.SecureCharBuffer;
@@ -51,15 +51,17 @@ public class LoginController {
         String username = message.getUsername();
         SecureCharBuffer charBuffer = message.getPassword();
 
-        return DatabaseFunctions.verifyUser(username, charBuffer);
-
+        User user = DatabaseFunctions.verifyUser(username, charBuffer);
+        if (user == null) loginView.invalidCredsAlert();
+        return user;
     }
 
     private void createUser(Message message) { // TODO
-
         String username = message.getUsername();
         SecureCharBuffer charBuffer = message.getPassword();
 
-        DatabaseFunctions.addNewUser(username, charBuffer);
+        User user = DatabaseFunctions.addNewUser(username, charBuffer);
+        if (user == null) loginView.invalidCreationAlert();
+        else loginView.enterCredsAlert();
     }
 }

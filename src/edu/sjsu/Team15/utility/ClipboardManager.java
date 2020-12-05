@@ -7,13 +7,13 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
 public class ClipboardManager implements Runnable {
-    private int clearTime;
+    private final int clearTime;
     private SecureCharBuffer charBuffer;
 
     /**
      * Constructor
-     * @param charBuffer
-     * @param clearTime
+     * @param charBuffer password to copy to clipboard
+     * @param clearTime how long the password exists on the clipboard
      */
     public ClipboardManager(SecureCharBuffer charBuffer, int clearTime) {
         this.clearTime = clearTime;
@@ -55,8 +55,8 @@ public class ClipboardManager implements Runnable {
 
     /**
      * Windows specific copy to clipboard
-     * @param password
-     * @param clearTime
+     * @param password password to copy
+     * @param clearTime how long password exists on the clipboard
      */
     private static void windowsCopyToClip(String password, int clearTime) {
         try {
@@ -77,8 +77,8 @@ public class ClipboardManager implements Runnable {
     /**
      * Linux specific copy to clipboard function
      * Requires xclip
-     * @param password
-     * @param clearTime
+     * @param password password to copy
+     * @param clearTime how long password exists on the clipboard
      */
     private static void linuxCopyToClip(String password, int clearTime) {
         try {
@@ -95,8 +95,8 @@ public class ClipboardManager implements Runnable {
 
     /**
      * MacOS specific copy to clipboard function
-     * @param password
-     * @param clearTime
+     * @param password password to copy
+     * @param clearTime how long password exists on the clipboard
      */
     private static void macCopyToClip(String password, int clearTime) { // UNTESTED
         try {

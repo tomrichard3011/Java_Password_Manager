@@ -26,10 +26,6 @@ public class ViewTest {
         LoginController loginController = new LoginController(queue, loginView);
         User user = loginController.run();
 
-        for (DomainInfo d : user.getDomainInfoArray()) {
-            System.out.println();
-        }
-
         // LINKING EVERYTHING TOGETHER
         DomainInfo firstDomain;
         if (user.getDomainInfoArray().size() == 0) firstDomain = new DomainInfo("", "", new SecureCharBuffer());
