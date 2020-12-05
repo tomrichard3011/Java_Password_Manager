@@ -20,7 +20,7 @@ import org.junit.Test;
  * Considering moving to @before, but some test cases could be designed around that, so 
  * it's left open. Just be careful when adding test cases.
  * 
- * @author Guerr
+ * @author Nicolas Guerrero
  */
 public class XMLTest {
 	// Basic File Necessities
@@ -206,7 +206,6 @@ public class XMLTest {
 		}
 	}
     
-    // TODO: Edit all values, not just the username
     @Test
 	public void editAUserUsername() {
 		try {
@@ -219,7 +218,7 @@ public class XMLTest {
     		DomainHandler dHandler = new DomainHandler(sample.getFileLocation().getAbsolutePath(), sample.getMasterKey(), sample.getUsername());
     		dHandler.writeDomains(domain1);
     		
-    		// Edit the user: Username
+    		// Edit the user: Username ----------------------------------------------------------------------------------------------------------
     		uHandler.editUser(user1.getUsername(), user1.getMasterKey(), HandlerConstants.XMLUSER, "notuser1");
     		assertEquals(false, uHandler.checkUser(user1.getUsername()));
     		assertEquals(true, uHandler.checkUser("notuser1"));
@@ -229,109 +228,46 @@ public class XMLTest {
     		DomainHandler editHandler1 = new DomainHandler(edit1.getFileLocation().getAbsolutePath(), edit1.getMasterKey(), edit1.getUsername());
     		ArrayList<DomainInfo> editDomain1 = editHandler1.getDomains();
     		assertEquals(domain1.size(), editDomain1.size());
+    		for(int i = 0; i < domain1.size(); i++) {
+    			assertEquals(domain1.get(i).getDomain(), editDomain1.get(i).getDomain());
+    			assertEquals(domain1.get(i).getUsername(), editDomain1.get(i).getUsername());
+    			assertEquals(domain1.get(i).getLogoPath(), editDomain1.get(i).getLogoPath());
+    		}
+    		
+    		// Edit the user: Password ----------------------------------------------------------------------------------------------------------
+    		SecureCharBuffer replaceKey = new SecureCharBuffer();
+    		replaceKey.append("newpassword");
+    		uHandler.editUser("notuser1", user1.getMasterKey(), HandlerConstants.XMLPASS, "newpassword");
+    		assertNull(uHandler.verifyUser("notuser1", user1.getMasterKey()));
+    		assertNotNull(uHandler.verifyUser("notuser1", replaceKey));
+    		
+    		// Check the new domain file
+    		User edit2 = uHandler.verifyUser("notuser1", replaceKey);
+    		DomainHandler editHandler2 = new DomainHandler(edit2.getFileLocation().getAbsolutePath(), edit2.getMasterKey(), edit2.getUsername());
+    		ArrayList<DomainInfo> editDomain2 = editHandler2.getDomains();
+    		assertEquals(domain1.size(), editDomain2.size());
+    		for(int i = 0; i < domain1.size(); i++) {
+    			assertEquals(domain1.get(i).getDomain(), editDomain2.get(i).getDomain());
+    			assertEquals(domain1.get(i).getUsername(), editDomain2.get(i).getUsername());
+    			assertEquals(domain1.get(i).getLogoPath(), editDomain2.get(i).getLogoPath());
+    		}
+    		
+    		// Edit the user: Filepath ----------------------------------------------------------------------------------------------------------
+    		// Note: Since clipboard isn't used in encryption/decryption, we don't test it, since if the others work, it works as well
+    		uHandler.editUser("notuser1", replaceKey, HandlerConstants.XMLPATH, directoryPath + "remainDomain.xyt");
+    		User edit3 = uHandler.verifyUser("notuser1", replaceKey);
+    		DomainHandler editHandler3 = new DomainHandler(edit3.getFileLocation().getAbsolutePath(), edit3.getMasterKey(), edit3.getUsername());
+    		ArrayList<DomainInfo> editDomain3 = editHandler3.getDomains();
+    		assertEquals(domain1.size(), editDomain3.size());
+    		for(int i = 0; i < domain1.size(); i++) {
+    			assertEquals(domain1.get(i).getDomain(), editDomain3.get(i).getDomain());
+    			assertEquals(domain1.get(i).getUsername(), editDomain3.get(i).getUsername());
+    			assertEquals(domain1.get(i).getLogoPath(), editDomain3.get(i).getLogoPath());
+    		}
     		
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertEquals(true, false);
 		}
 	}
-	
-    /**
-	public static void main(String[] args) {	
-		// XML File Constants: User File
-		String fileSep = System.getProperty("file.separator");
-
-		String userFilepath = System.getProperty("user.dir") + fileSep + "xmlTests" + fileSep + "user.xyt";
-		String userSalt = "user";
-		SecureCharBuffer internalKey = new SecureCharBuffer();
-		internalKey.append("special");
-		
-		// XML File Constants: Domain File
-		String filepath = System.getProperty("user.dir") + fileSep + "xmlTests" + fileSep + userSalt + "domains.xyt";
-		String salt = "username";
-		SecureCharBuffer key = new SecureCharBuffer();
-		key.append("password");
-		
-		// Create an xml file
-		File encryptedUserFile = UserHandler.createNewUserFile(new File(userFilepath));
-		
-		try {
-			// Add a user (UserHandler)
-			UserHandler uHandler = new UserHandler(encryptedUserFile.getAbsolutePath());
-			// Test 2: Check for a user that doesn't exist in the file (Done above)
-			System.out.print("This should be false: ");
-			System.out.println(uHandler.checkUser(salt));
-			User person = uHandler.addUser(salt, key, 200, new File(filepath)); // add user
-			
-			// Check that the user is there
-			System.out.println("The line below me should be true:");
-			System.out.println(uHandler.checkUser(salt));
-			
-			// By adding the user, we get a user object. Now, let's try to pull that from the file
-			UserHandler anotherHandler = new UserHandler(encryptedUserFile.getAbsolutePath());
-			User samePerson = anotherHandler.verifyUser(salt, key);
-			
-			// Test 1: Confirm it was added to the file
-			System.out.println("Comparing user against itself");
-			// Compare that both names are the same
-			System.out.println(person.getUsername());
-			System.out.println(samePerson.getUsername());
-			// Compare that both passwords are the same
-			System.out.println(person.getMasterKey().toStringAble());
-			System.out.println(samePerson.getMasterKey().toStringAble());
-			// Compare that both DomainInfo arrays are empty
-			System.out.println(person.getDomainInfoArray().size());
-			System.out.println(samePerson.getDomainInfoArray().size());
-			// Compare that both file paths are the same
-			System.out.println(person.getFileLocation());
-			System.out.println(samePerson.getFileLocation());
-			
-			// Test 3: Edit the existing user
-			anotherHandler.editUser(salt, key, HandlerConstants.XMLUSER, "notusername");
-			salt = "notusername";
-			if(anotherHandler.checkUser("notusername")) {
-				System.out.println("Editing is working!");
-			} else {
-				throw new Exception("Editing is not working.");
-			}
-			
-			// Test 4: Add a user & remove the original user
-			anotherHandler.addUser("delete me", internalKey, 100, new File(System.getProperty("user.dir") + fileSep + "xmlTests" + fileSep + "merry.xyt"));
-			if(anotherHandler.checkUser("delete me")) {
-				System.out.println("User added");
-			}
-			anotherHandler.deleteUser("delete me", internalKey);
-			if(!anotherHandler.checkUser("delete me")) {
-				System.out.println("User deleted");
-			} else {
-				throw new Exception("Delete failed.");
-			}
-			
-			// Test DomainHandler
-			User person1 = anotherHandler.verifyUser(salt, key);
-			ArrayList<DomainInfo> list = person1.getDomainInfoArray();
-			SecureCharBuffer pass = new SecureCharBuffer();
-			pass.append("somehashedpassword");
-			list.add(new DomainInfo("google", "generic.user@gmail.com", pass));
-			list.add(new DomainInfo("yahoo", "generic.user@yahoo.com", pass));
-			list.add(new DomainInfo("canvas", "canvas", pass));
-			DomainHandler domHandler = new DomainHandler(person1.getFileLocation().toString(), key, salt);
-			domHandler.writeDomains(list);
-			
-			// Check that the domains are being written correctly
-			ArrayList<DomainInfo> checking = domHandler.getDomains();
-			for(int i = 0; i < checking.size(); i++) {
-				System.out.println(checking.get(i).getDomain());
-				System.out.println(checking.get(i).getUsername());
-				System.out.println(checking.get(i).getPassword().toStringAble());
-			}
-			
-			// public DomainInfo(String domain, String username, SecureCharBuffer password)
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-	}**/
 }

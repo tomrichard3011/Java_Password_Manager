@@ -86,13 +86,6 @@ public class UserHandler extends DatabaseHandler {
 			// Decrypt the file
 			database = decrypt(master, salt);
 			
-			// Debugging: Reading the file from temp directory
-			Path path = Paths.get(database.getAbsolutePath());
-			String template = Files.readString(path);
-			System.out.println("------------------");
-			System.out.println(template);
-			System.out.println("------------------");
-			
 			FileInputStream stream = new FileInputStream(database);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
@@ -107,22 +100,7 @@ public class UserHandler extends DatabaseHandler {
 			stream.close();
 			
 			if(node != null && node.hasChildNodes()) {
-				// Username is 0, pass is 1, clipboard is 2, filepath is 3 getNodeValue()
 				NodeList elements = node.getChildNodes();
-				
-				// Read through the node list TODO
-				System.out.println("----------------------");
-				for(int i = 0; i < elements.getLength(); i++) {
-					System.out.print(i);
-					System.out.print(" :");
-					System.out.print(elements.item(i).getNodeName());
-					System.out.print(" :");
-					System.out.print(elements.item(i).getNodeValue());
-					System.out.print(" :");
-					System.out.println(elements.item(i).getTextContent());
-				}
-				System.out.println("-------------------------");
-				
 				String fileLoc = elements.item(HandlerConstants.XMLPATH).getTextContent();
 				User currentUser = new User(username, password, Integer.parseInt(elements.item(HandlerConstants.XMLCLIP).getTextContent()), fileLoc);
 				DomainHandler domainHandler = new DomainHandler(fileLoc, currentUser.getMasterKey(), currentUser.getUsername());
@@ -244,14 +222,6 @@ public class UserHandler extends DatabaseHandler {
 		try {
 			// Decrypt the file
 			database = decrypt(master, salt);
-			
-			// Debugging: Reading the file from temp directory
-			Path path = Paths.get(database.getAbsolutePath());
-			String template = Files.readString(path);
-			System.out.println("Before------------------");
-			System.out.println(template);
-			System.out.println("Before------------------");
-			
 			FileInputStream stream = new FileInputStream(database);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
@@ -297,15 +267,8 @@ public class UserHandler extends DatabaseHandler {
 		        if(encrypt(master, salt) == null) {
 					return false;
 				} else {
-					// Debugging: Reading the file from temp directory
-					Path p = Paths.get(database.getAbsolutePath());
-					String t = Files.readString(p);
-					System.out.println("After------------------");
-					System.out.println(t);
-					System.out.println("After------------------");
 					return true;
-				}
-		        
+				}    
 			} else {
 				// Node not found
 				return false;
@@ -323,14 +286,6 @@ public class UserHandler extends DatabaseHandler {
 		try {
 			// Decrypt the file
 			database = decrypt(master, salt);
-			
-			// Debugging: Reading the file from temp directory
-			Path path = Paths.get(database.getAbsolutePath());
-			String template = Files.readString(path);
-			System.out.println("Before------------------");
-			System.out.println(template);
-			System.out.println("Before------------------");
-			
 			FileInputStream stream = new FileInputStream(database);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
@@ -371,14 +326,8 @@ public class UserHandler extends DatabaseHandler {
 					return false;
 				} else {
 					// Debugging: Reading the file from temp directory
-					Path p = Paths.get(database.getAbsolutePath());
-					String t = Files.readString(p);
-					System.out.println("After------------------");
-					System.out.println(t);
-					System.out.println("After------------------");
 					return true;
 				}
-		        
 			} else {
 				// Node not found
 				return false;

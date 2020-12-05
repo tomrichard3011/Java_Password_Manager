@@ -35,4 +35,4 @@ hs_err_pid*
 .idea
 
 # Test Case files
-.xyt
+*.xyt
