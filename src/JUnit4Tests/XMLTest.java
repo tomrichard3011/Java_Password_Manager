@@ -14,35 +14,230 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Notes:
+ * For every test case, a new user file is generated, to prevent issues in other tests.
+ * Considering moving to @before, but some test cases could be designed around that, so 
+ * it's left open. Just be careful when adding test cases.
+ * 
+ * @author Guerr
+ */
 public class XMLTest {
+	// Basic File Necessities
+	String fileSep;
+	String directoryPath;
+	String userFilePath;
 	
-	/**
+	// Sample Users
+	User user1;
+	User user2;
+	User user3;
+	
+	// Corresponding sample domain lists (may or may not use)
+	ArrayList<DomainInfo> domain1;
+	ArrayList<DomainInfo> domain2;
+	ArrayList<DomainInfo> domain3;
+	
 	@Before
-    public void setUp() throws Exception
+    public void initialize() throws Exception
     {
-		//
+		// File Management System
+		fileSep = System.getProperty("file.separator");
+		directoryPath = System.getProperty("user.dir") + fileSep + "xmlTests" + fileSep;
+		userFilePath = directoryPath + "user.xyt";
+		
+		// User 1 Information
+		String salt1 = "user1";
+		SecureCharBuffer pass1 = new SecureCharBuffer();
+		pass1.append("mainpassword1");
+		SecureCharBuffer subpass1 = new SecureCharBuffer();
+		subpass1.append("subpassword1");
+		user1 = new User(salt1, pass1, 0, directoryPath + salt1 + "domains.xyt");
+		domain1 = new ArrayList<DomainInfo>();
+		domain1.add(new DomainInfo("google", "usey1", subpass1));
+		domain1.add(new DomainInfo("bing", "usey1", subpass1));
+		domain1.add(new DomainInfo("quizlet", "usey1", subpass1));
+		
+		// User 2 Information
+		String salt2 = "user2";
+		SecureCharBuffer pass2 = new SecureCharBuffer();
+		pass2.append("mainpassword2");
+		SecureCharBuffer subpass2 = new SecureCharBuffer();
+		subpass2.append("subpassword2");
+		user2 = new User(salt2, pass2, 0, directoryPath + salt2 + "domains.xyt");
+		domain2 = new ArrayList<DomainInfo>();
+		domain2.add(new DomainInfo("google", "useh2", subpass2));
+		
+		// User 3 Information
+		String salt3 = "user3";
+		SecureCharBuffer pass3 = new SecureCharBuffer();
+		pass3.append("mainpassword3");
+		SecureCharBuffer subpass3 = new SecureCharBuffer();
+		subpass3.append("subpassword3");
+		user3 = new User(salt3, pass3, 0, directoryPath + salt3 + "domains.xyt");
+		domain3 = new ArrayList<DomainInfo>();
+		domain3.add(new DomainInfo("google", "useq3", subpass3));
+		domain3.add(new DomainInfo("canvas", "useq3", subpass3));
+		domain3.add(new DomainInfo("facebook", "useq3", subpass3));
+		domain3.add(new DomainInfo("imgur", "useq3", subpass3));
+		domain3.add(new DomainInfo("duckduckgo", "useq3", subpass3));
+		domain3.add(new DomainInfo("evc", "useq3", subpass3));
+		domain3.add(new DomainInfo("youtube", "useq3", subpass3));
+		domain3.add(new DomainInfo("codepath", "useq3", subpass3));
+		domain3.add(new DomainInfo("jstor", "useq3", subpass3));
+		domain3.add(new DomainInfo("history", "useq3", subpass3));
+		domain3.add(new DomainInfo("steam", "useq3", subpass3));
+    }
+	
+	// Testing the handlers raw
+	
+	@Test
+	public void createEmptyFiles() {
+		try {
+			// Empty User File
+			File userFile = UserHandler.createNewUserFile(new File(userFilePath));
+			UserHandler uHandler = new UserHandler(userFile.getAbsolutePath());
+			assertEquals(false, uHandler.checkUser(null));
+			
+			// Empty Domain File
+			File sampleDomainFile = DomainHandler.createNewDomainFile(user1.getUsername(), user1.getMasterKey(), user1.getFileLocation().getAbsoluteFile());
+			DomainHandler dHandler = new DomainHandler(sampleDomainFile.getAbsolutePath(), user1.getMasterKey(), user1.getUsername());
+			assertEquals(0, dHandler.getDomains().size());
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertEquals(true, false);
+		}
+	}
+	
+    @Test
+    public void addAUser() {
+    	try {
+    		// Create user file
+    		File userFile = UserHandler.createNewUserFile(new File(userFilePath));
+    		UserHandler uHandler = new UserHandler(userFile.getAbsolutePath());
+    		
+    		// Add a user and check that it exists
+    		assertEquals(false, uHandler.checkUser(user1.getUsername()));
+    		uHandler.addUser(user1.getUsername(), user1.getMasterKey(), user1.getClipboardClearTime(), user1.getFileLocation());
+    		assertEquals(true, uHandler.checkUser(user1.getUsername()));
+    		
+    		// Make sure that the domain file is empty as well
+    		User sample = uHandler.verifyUser(user1.getUsername(), user1.getMasterKey());
+    		DomainHandler dHandler = new DomainHandler(sample.getFileLocation().getAbsolutePath(), sample.getMasterKey(), sample.getUsername());
+    		assertEquals(0, dHandler.getDomains().size());
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		assertEquals(true, false);
+    	}
     }
     
-    @Test(expected=IndexOutOfBoundsException.class)
-    public void getMaxOfAnEmptyHeap() {
-	    while(true) {
-	 	   heap.extractMax();
-	    }
+    @Test
+    public void addMultipleUsers() {
+    	try {
+    		// Create user file
+    		File userFile = UserHandler.createNewUserFile(new File(userFilePath));
+    		UserHandler uHandler = new UserHandler(userFile.getAbsolutePath());
+    		
+    		// Add multiple users
+    		uHandler.addUser(user1.getUsername(), user1.getMasterKey(), user1.getClipboardClearTime(), user1.getFileLocation());
+    		uHandler.addUser(user2.getUsername(), user2.getMasterKey(), user2.getClipboardClearTime(), user2.getFileLocation());
+    		uHandler.addUser(user3.getUsername(), user3.getMasterKey(), user3.getClipboardClearTime(), user3.getFileLocation());
+    		
+    		assertEquals(true, uHandler.checkUser(user1.getUsername()));
+    		assertEquals(true, uHandler.checkUser(user2.getUsername()));
+    		assertEquals(true, uHandler.checkUser(user3.getUsername()));
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		assertEquals(true, false);
+    	}
     }
-    **/
+    
+    @Test
+    public void testBasicDomains() {
+    	try {
+    		// Create user file
+    		File userFile = UserHandler.createNewUserFile(new File(userFilePath));
+    		UserHandler uHandler = new UserHandler(userFile.getAbsolutePath());
+    		
+    		// Add the user and its domains
+    		User sample = uHandler.addUser(user1.getUsername(), user1.getMasterKey(), user1.getClipboardClearTime(), user1.getFileLocation());
+    		DomainHandler dHandler = new DomainHandler(sample.getFileLocation().getAbsolutePath(), sample.getMasterKey(), sample.getUsername());
+    		dHandler.writeDomains(domain1);
+    		
+    		// Check that the domains can be fetched correctly
+    		User check = uHandler.verifyUser(user1.getUsername(), user1.getMasterKey());
+    		DomainHandler chkHandler = new DomainHandler(check.getFileLocation().getAbsolutePath(), check.getMasterKey(), check.getUsername());
+    		ArrayList<DomainInfo> fthDomain = chkHandler.getDomains();
+    		
+    		assertEquals(domain1.size(), fthDomain.size());
+    		for(int i = 0; i < domain1.size(); i++) {
+    			assertEquals(domain1.get(i).getDomain(), fthDomain.get(i).getDomain());
+    			assertEquals(domain1.get(i).getUsername(), fthDomain.get(i).getUsername());
+    			assertEquals(domain1.get(i).getLogoPath(), fthDomain.get(i).getLogoPath());
+    		}
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		assertEquals(true, false);
+    	}
+    }
+    
+    @Test
+	public void deleteAUser() {
+		try {
+			// Empty User File
+			File userFile = UserHandler.createNewUserFile(new File(userFilePath));
+			UserHandler uHandler = new UserHandler(userFile.getAbsolutePath());
+			
+			// Add the user and its domains
+    		User sample = uHandler.addUser(user1.getUsername(), user1.getMasterKey(), user1.getClipboardClearTime(), user1.getFileLocation());
+    		DomainHandler dHandler = new DomainHandler(sample.getFileLocation().getAbsolutePath(), sample.getMasterKey(), sample.getUsername());
+    		dHandler.writeDomains(domain1);
+    		
+    		// Delete the user and check if it has been removed from the file
+    		uHandler.deleteUser(user1.getUsername(), user1.getMasterKey());
+    		assertEquals(false, uHandler.checkUser(user1.getUsername()));
+    		
+    		// Check if the domain file has been removed
+    		assertEquals(false, user1.getFileLocation().exists());
+    		
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertEquals(true, false);
+		}
+	}
+    
+    // TODO: Edit all values, not just the username
+    @Test
+	public void editAUserUsername() {
+		try {
+			// Empty User File
+			File userFile = UserHandler.createNewUserFile(new File(userFilePath));
+			UserHandler uHandler = new UserHandler(userFile.getAbsolutePath());
+			
+			// Add the user and its domains
+    		User sample = uHandler.addUser(user1.getUsername(), user1.getMasterKey(), user1.getClipboardClearTime(), user1.getFileLocation());
+    		DomainHandler dHandler = new DomainHandler(sample.getFileLocation().getAbsolutePath(), sample.getMasterKey(), sample.getUsername());
+    		dHandler.writeDomains(domain1);
+    		
+    		// Edit the user: Username
+    		uHandler.editUser(user1.getUsername(), user1.getMasterKey(), HandlerConstants.XMLUSER, "notuser1");
+    		assertEquals(false, uHandler.checkUser(user1.getUsername()));
+    		assertEquals(true, uHandler.checkUser("notuser1"));
+    		
+    		// Check the new domain file
+    		User edit1 = uHandler.verifyUser("notuser1", user1.getMasterKey());
+    		DomainHandler editHandler1 = new DomainHandler(edit1.getFileLocation().getAbsolutePath(), edit1.getMasterKey(), edit1.getUsername());
+    		ArrayList<DomainInfo> editDomain1 = editHandler1.getDomains();
+    		assertEquals(domain1.size(), editDomain1.size());
+    		
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertEquals(true, false);
+		}
+	}
 	
-	public static void main(String[] args) {
-		/**
-		//File actile = new File("\\xmlTests\\test.xml");
-		File actile = new File("C:\\Users\\Guerr\\eclipse-workspace\\PassMan\\xmlTests\\test.xml");
-		//File secile = new File("\\xmlTests\\secTest.a");
-		File secile = new File("C:\\Users\\Guerr\\eclipse-workspace\\PassMan\\xmlTests\\secTest.a");
-		String username = "username";
-		SecureCharBuffer password = new SecureCharBuffer();
-		password.append("password");
-		**/
-		
-		
+    /**
+	public static void main(String[] args) {	
 		// XML File Constants: User File
 		String fileSep = System.getProperty("file.separator");
 
@@ -138,27 +333,5 @@ public class XMLTest {
 			e.printStackTrace();
 			return;
 		}
-		
-		// UserHandler(String filepath)
-		// UserHandler(String filepath, SecureCharBuffer key, String salt)
-		// DomainHandler(String filepath, SecureCharBuffer key, String salt)
-		
-		// public static File createNewUserFile(String username, SecureCharBuffer password, File secureFileLocation)
-		// public static File createNewDomainFile(String username, SecureCharBuffer password, File secureFileLocation)
-		
-		// User files
-		// public User verifyUser(String username, SecureCharBuffer password)
-		// public boolean checkUser(String username)
-		// public User addUser(String username, SecureCharBuffer password, int clipboardTime, File secureFile)
-		
-		// Domain files
-		// public ArrayList<DomainInfo> getDomains()
-		// public boolean writeDomains(ArrayList<DomainInfo> domains)
-		
-		// Write to the xml
-		
-		// Read from the xml
-		
-		// Other query stuff
-	}
+	}**/
 }

@@ -159,7 +159,6 @@ public class DomainHandler extends DatabaseHandler {
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        transformer = transformerFactory.newTransformer();
-	        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
 	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 	        source = new DOMSource(doc);

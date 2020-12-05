@@ -140,7 +140,11 @@ public class UserHandler extends DatabaseHandler {
 	
 	/**
 	 * Checks if the username is already present in the user database file
-	 * Used to ensure no duplicates on the database file
+	 * Used to ensure no duplicates on the database file.
+	 * NOTE: If somehow username is null, then it will check if anything exists
+	 * in the file at all. Returns true if something is found, false if there's
+	 * nothing. Used primarily in test cases, but can work as an additional tool,
+	 * since null should never be run through here normally.
 	 * @param username The username, must be exact
 	 * @return Whether the username is taken or not
 	 */
@@ -156,8 +160,15 @@ public class UserHandler extends DatabaseHandler {
 			stream.close();
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			
-			// Search for the username and return if it's found or not
-			String query = "/Users/user[name='" + username + "']";
+			String query;
+			if(username != null) {
+				// Search for the username and return if it's found or not
+				query = "/Users/user[name='" + username + "']";
+			} else {
+				// Check if there's anything in the file
+				query = "/Users/user[0]";
+			}
+			
 			found = (Boolean) xpath.evaluate(query, userXML, XPathConstants.BOOLEAN);
 		} catch (Exception e) {
 			e.printStackTrace();

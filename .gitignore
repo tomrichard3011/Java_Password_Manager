@@ -33,3 +33,6 @@ hs_err_pid*
 # OS files
 .DS_Store
 .idea
+
+# Test Case files
+.xyt
