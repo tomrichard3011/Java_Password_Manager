@@ -5,7 +5,7 @@ This program can also generate cryptographically secure passwords using the comp
 <br>
 This program is also dependant on third party libraries.<br> 
 All code within the edu.sjsu.Team15 package is our code, including the EntryPoint.java, Main.java and JUnit4Tests/.<br>
-They've already been included in our code, however you can find them here:<br>
+They've already been included in our code, however you can find the external libraries here:<br>
 Package:<br>
 [net.codesup.utilities.basen](https://github.com/mklemm/base-n-codec-java)<br>
 [io.github.novacrypto](https://github.com/NovaCrypto/SecureString)<br>
