@@ -39,7 +39,7 @@ public class MainView extends JFrame {
         this.add(settingsButton);
         this.SpringLayoutSetup(layout);
 
-        this.setPreferredSize(new Dimension(500, 450));
+        this.setPreferredSize(new Dimension(500, 500));
         this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.pack();

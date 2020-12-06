@@ -7,7 +7,9 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
 public class ClipboardManager implements Runnable {
+    /** Time before clipboard is cleared */
     private final int clearTime;
+    /** password to be copied to clipboard */
     private SecureCharBuffer charBuffer;
 
     /**

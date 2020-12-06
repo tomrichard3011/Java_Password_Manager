@@ -32,7 +32,7 @@ public class SettingsView extends JFrame {
     public SettingsView(LinkedBlockingQueue<Message> queue) {
         this.queue = queue;
 
-        setBounds(100, 100, 450, 200);
+        //setBounds(0, 0, 350, 200);
 
         contentPane = new JPanel();
         setContentPane(contentPane);
@@ -104,7 +104,7 @@ public class SettingsView extends JFrame {
 
         // CLEAR TIME BUTTON
         // clear time button
-        layout.putConstraint(SpringLayout.NORTH, btnClearTime, 20,
+        layout.putConstraint(SpringLayout.SOUTH, btnClearTime, 0,
                 SpringLayout.VERTICAL_CENTER, this);
         layout.putConstraint(SpringLayout.EAST, btnClearTime, -10,
                 SpringLayout.WEST, clear);
@@ -118,7 +118,7 @@ public class SettingsView extends JFrame {
     /**
      * Action button listener for all buttons
      */
-    class SettingButtonListener implements ActionListener { //TODO
+    class SettingButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             Object source = actionEvent.getSource();

@@ -60,7 +60,7 @@ public class EditDomainInfoView extends JFrame{
         springLayoutSetup();
 
         // frame setups
-        this.setPreferredSize(new Dimension(350, 110));
+        this.setPreferredSize(new Dimension(350, 150));
         this.setResizable(false);
         this.pack();
         this.setVisible(true);
@@ -93,8 +93,8 @@ public class EditDomainInfoView extends JFrame{
                 SpringLayout.WEST, passwordField);
 
         // Edit button
-        layout.putConstraint(SpringLayout.SOUTH, editButton, -10,
-                SpringLayout.SOUTH, this);
+        layout.putConstraint(SpringLayout.NORTH, editButton, 10,
+                SpringLayout.SOUTH, passwordLabel);
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, editButton, 0,
                 SpringLayout.HORIZONTAL_CENTER, this);
     }

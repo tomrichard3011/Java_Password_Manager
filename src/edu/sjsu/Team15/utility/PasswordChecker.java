@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import io.github.novacrypto.SecureCharBuffer;
 
 public class PasswordChecker {
+    /** regex pattern for a string that contains at least 8 characters, upper and lower case, digit, and symbol */
     private static final String regexPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
 
     /**

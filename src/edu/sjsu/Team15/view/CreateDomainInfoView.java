@@ -66,7 +66,7 @@ public class CreateDomainInfoView extends JFrame{
         SpringLayoutSetup(layout);
 
         // frame setups
-        this.setPreferredSize(new Dimension(350, 150));
+        this.setPreferredSize(new Dimension(350, 250));
         this.setResizable(false);
         this.pack();
         this.setVisible(true);
@@ -134,8 +134,8 @@ public class CreateDomainInfoView extends JFrame{
                 SpringLayout.HORIZONTAL_CENTER, passField);
 
         // Add credential button
-        layout.putConstraint(SpringLayout.SOUTH, addCreds, -10,
-                SpringLayout.SOUTH, this);
+        layout.putConstraint(SpringLayout.NORTH, addCreds, 10,
+                SpringLayout.SOUTH, randomPass);
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, addCreds, 0,
                 SpringLayout.HORIZONTAL_CENTER, this);
     }
