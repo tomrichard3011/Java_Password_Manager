@@ -10,6 +10,15 @@ package edu.sjsu.Team15.model;
 import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 import java.nio.file.Files;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+
+import org.w3c.dom.Document;
+
 import java.io.*;
 
 public abstract class DatabaseHandler {
@@ -30,6 +39,12 @@ public abstract class DatabaseHandler {
 		activeFile.deleteOnExit();
 	}
 	
+	/**
+	 * Encrypt the active file and save it to the secure file location
+	 * @param sk The key used for encryption
+	 * @param username The salt used for encryption
+	 * @return File The location where the secure file was saved
+	 */
 	public File encrypt(SecureCharBuffer sk, String username) {
 		try {
 			
@@ -45,13 +60,25 @@ public abstract class DatabaseHandler {
 			FileOutputStream stream = new FileOutputStream(secureFile.getAbsoluteFile(), false);
 			stream.write(encryptedBytes);
 			stream.close();
+			// Delete the decrypted file
+			activeFile.delete();
 		} catch(IOException e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			if(activeFile.exists()) {
+				activeFile.delete();
+			}
 		}
 		return secureFile;
 	}
 	
+	/**
+	 * Decrypt the secure file and save it to the active file location
+	 * @param sk The key used for decryption
+	 * @param username The salt used for decryption
+	 * @return File The location where the active file wa saved
+	 */
 	public File decrypt(SecureCharBuffer sk, String username) {
 		try {
 			// Transform encrypted file to unencrypted byte array
@@ -100,7 +127,7 @@ public abstract class DatabaseHandler {
 			}
 		} catch (SecurityException e) {
 			e.printStackTrace();
-			System.out.println("WARNING: Decrypted file cannot be removed due to permissions! Please delete the file manually or resolve permissions.");
+			return null;
 		}
 		return activeFile;
 	}
@@ -114,10 +141,46 @@ public abstract class DatabaseHandler {
 	 */
 	public File destroyActiveFile() {
 		try {
-			activeFile.delete();
+			if(activeFile.exists()) {
+				activeFile.delete();
+			}
 		} catch (SecurityException e) {
-			System.out.println("WARNING: Decrypted file cannot be removed due to permissions! Please delete the file manually or resolve permissions.");
+			e.printStackTrace();
+			return null;
 		}
 		return activeFile;
+	}
+	
+	// General Functions for helping sub-handler processes
+	
+	/**
+	 * Create a xml document for the java parsers to read
+	 * @param current The file to be converted, or null for a blank file
+	 * @return The xml object used for parsing
+	 * @throws Exception
+	 */
+	public static Document buildDoc(File current) throws Exception {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		if(current == null) {
+			return docBuilder.newDocument();
+		} else {
+			Document output = docBuilder.parse(current);
+			current.delete();
+			return output;
+		}
+	}
+	
+	/**
+	 * Create a template transformer for correctly writing the xml files
+	 * @return Transformer for writing the xml files correctly
+	 * @throws Exception
+	 */
+	public static Transformer buildTransformer() throws Exception {
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+        return transformer;
 	}
 }

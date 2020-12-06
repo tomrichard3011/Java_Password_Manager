@@ -7,12 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import edu.sjsu.Team15.utility.CryptoUtil;
+import edu.sjsu.Team15.utility.HandlerConstants;
 import io.github.novacrypto.SecureCharBuffer;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
@@ -26,8 +23,10 @@ public class DomainHandler extends DatabaseHandler {
 	private String salt;
 
 	/**
-	 * Constructor
-	 * @param filepath
+	 * Create a DomainHandler
+	 * Note: If you ever edit the user in the user file, create a new DomainHandler. It won't read
+	 * the correct credentials otherwise and will fail.
+	 * @param filepath The secure file location
 	 * @param key User's master key
 	 * @param salt User's username
 	 * @throws IOException
@@ -46,34 +45,34 @@ public class DomainHandler extends DatabaseHandler {
 	 * @return The ArrayList of all the domains
 	 */
 	public ArrayList<DomainInfo> getDomains() {
-		// Prepare the xml file
-		database = decrypt(master, salt);
-		Document doc;
 		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
-			doc = dbBuilder.parse(database);
+			// Prepare the xml file
+			database = decrypt(master, salt);
+			Document doc = buildDoc(database);
+			
+			// Build the list of domains
+			ArrayList<DomainInfo> allDomains = new ArrayList<DomainInfo>();
+			NodeList domainList = doc.getElementsByTagName("domain");
+			NodeList fields;
+			for(int i = 0; i < domainList.getLength(); i++) {
+				Node current = domainList.item(i);
+				fields = current.getChildNodes();
+				allDomains.add(new DomainInfo(
+						fields.item(HandlerConstants.DOMAINNAME).getTextContent(),
+						fields.item(HandlerConstants.DOMAINUSER).getTextContent(),
+						convertToBuffer(fields.item(HandlerConstants.DOMAINPASS).getTextContent())));
+			}
+			return allDomains;
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			if(database != null && database.exists()) {
+				database.delete();
+			}
 		}
-		
-		// Build the list of domains
-		ArrayList<DomainInfo> allDomains = new ArrayList<DomainInfo>();
-		NodeList domainList = doc.getElementsByTagName("domain");
-		NodeList fields;
-		for(int i = 0; i < domainList.getLength(); i++) {
-			Node current = domainList.item(i);
-			fields = current.getChildNodes();
-			allDomains.add(new DomainInfo(
-					fields.item(0).getTextContent(),
-					fields.item(1).getTextContent(),
-					convertToBuffer(fields.item(2).getTextContent())));
-		}
-		return allDomains;
 	}
 	
-	// Write all domains
 	/**
 	 * Write the domain ArrayList to the domain file personal to the user
 	 * The function creates a new Document, and translates the DOM object to the
@@ -85,48 +84,38 @@ public class DomainHandler extends DatabaseHandler {
 	 * @return Whether the process was successfully completed
 	 */
 	public boolean writeDomains(ArrayList<DomainInfo> domains) {
-		// Prepare file to write
-		Document doc = null;
 		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
-			//doc = dbBuilder.parse(database);
-			doc = dbBuilder.newDocument();
+			// Prepare DOM object to replace
+			Document doc = buildDoc(null);
+			Element root = doc.createElementNS("WeCouldAddAHashHereThatVerifiesFile", "domains");
+			doc.appendChild(root);
+			for(int i = 0; i < domains.size(); i++) {
+				root.appendChild(domainToNode(doc, domains.get(i)));
+			}
+			
+			// Write to file location
+	        DOMSource source = new DOMSource(doc);
+	        database = File.createTempFile("sjsu", ".xml");
+	        StreamResult file = new StreamResult(database);
+	        Transformer transformer = buildTransformer();
+	        transformer.transform(source, file);
+	        
+	        // Encrypt the file: Warning, this will destroy the original file
+			// Set active file, then encrypt that file to the right location
+			setActiveFile(database.getAbsolutePath());
+			if(encrypt(master, salt) == null) {
+				return false;
+			}
+			return true;
+	        
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			if(database != null && database.exists()) {
+				database.delete();
+			}
 		}
-		
-		// Prepare DOM object to replace
-		Element root = doc.createElementNS("WeCouldAddAHashHereThatVerifiesFile", "domains");
-		doc.appendChild(root);
-		for(int i = 0; i < domains.size(); i++) {
-			root.appendChild(domainToNode(doc, domains.get(i)));
-		}
-		
-		// Write to file location
-		try {
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	        Transformer transformer = transformerFactory.newTransformer();
-	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
-	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
-	        DOMSource source = new DOMSource(doc);
-	        
-	        database = File.createTempFile("sjsu", ".xml");
-	        StreamResult file = new StreamResult(database);
-	        transformer.transform(source, file);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		// Encrypt the file: Warning, this will destroy the original file
-		// Set active file, then encrypt that file to the right location
-		setActiveFile(database.getAbsolutePath());
-		if(encrypt(master, salt) == null) {
-			return false;
-		}
-		return true;
 	}
 	
 	/**
@@ -140,69 +129,67 @@ public class DomainHandler extends DatabaseHandler {
 	 * @return
 	 */
 	public static File createNewDomainFile(String username, SecureCharBuffer password, File secureFileLocation) {
-		// Prepare file to write
-		Document doc;
+		File temporaryFile = null;
 		try {
-			DocumentBuilderFactory domainFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder domainBuilder = domainFactory.newDocumentBuilder();
-			doc = domainBuilder.newDocument();
+			// Prepare file to write
+			Document doc;
+			doc = buildDoc(null);
 			Element root = doc.createElementNS("WeCouldAddAHashHereThatVerifiesFile", "domains");
 			doc.appendChild(root);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-		// Write to the DOM object
-		Transformer transformer;
-		DOMSource source;
-		try {
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	        transformer = transformerFactory.newTransformer();
-	        transformer.setOutputProperty(OutputKeys.INDENT, "no");
-	        transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
-	        source = new DOMSource(doc);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-        
-        // Write to temporary file
-		File temporaryFile;
-		try {
+			
+	        // Write to the temporary file
 	        temporaryFile = File.createTempFile("sjsu", ".xml");
 	        StreamResult file = new StreamResult(temporaryFile);
+ 			Transformer transformer = buildTransformer();
+ 	        DOMSource source = new DOMSource(doc);
 	        transformer.transform(source, file);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-        // Encrypt to the provided location
-		try {
+			
+	        // Encrypt to the provided location
 	        byte[] fileBytes = Files.readAllBytes(temporaryFile.toPath());
 	        byte[] encryptedBytes = CryptoUtil.encrypt(password, username, fileBytes);
 	        FileOutputStream stream = new FileOutputStream(secureFileLocation.getAbsoluteFile(), false);
 			stream.write(encryptedBytes);
 			stream.close();
+			return secureFileLocation;   
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			if(temporaryFile != null && temporaryFile.exists()) {
+				temporaryFile.delete();
+			}
 		}
-		return secureFileLocation;
 	}
 	
+	/**
+	 * Converts a String to a SecureCharBuffer
+	 * Used when fetching the password from a file
+	 * @param hash The password to be converted
+	 * @return SecureCharBuffer The buffer where the password is stored
+	 */
 	private SecureCharBuffer convertToBuffer(String hash) {
 		SecureCharBuffer buffer = new SecureCharBuffer();
 		buffer.append(hash);
 		return buffer;
 	}
 	
+	/**
+	 * Converts a SecureCharBuffer to a String
+	 * Used when storing a password in the xml file
+	 * @param buffer The buffer where the password is stored
+	 * @return String The string representation of the buffer
+	 */
 	private String convertToString(SecureCharBuffer buffer) {
 		CharSequence loosePass = buffer.toStringAble();
 		return loosePass.toString();
 	}
 	
+	/**
+	 * Converts a Domain object into a xml node that can append to the root node
+	 * @param doc A document object that can create elements
+	 * @param domain The domain being converted
+	 * @return Node The Node representation of the domain
+	 */
 	private Node domainToNode(Document doc, DomainInfo domain) {
 		Element current = doc.createElement("domain");
 		current.appendChild(formElement(doc, "site", domain.getDomain()));
@@ -211,10 +198,16 @@ public class DomainHandler extends DatabaseHandler {
 		return current;
 	}
 	
+	/**
+	 * Creates a Node containing the field from the domain object
+	 * @param doc A document object that creates elements
+	 * @param name The name of the tag (site, user, pass)
+	 * @param value The value being stored in the domain
+	 * @return Node The Node representation of a field in DomianInfo
+	 */
 	private Node formElement(Document doc, String name, String value) {
 		Element node = doc.createElement(name);
 		node.appendChild(doc.createTextNode(value));
 		return node;
 	}
-
 }
