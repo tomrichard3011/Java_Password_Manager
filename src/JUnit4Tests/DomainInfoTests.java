@@ -6,6 +6,9 @@ import org.junit.*;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Testing DomainInfo getters and setters (and logo images)
+ */
 public class DomainInfoTests {
     DomainInfo domainInfo;
     String domain;

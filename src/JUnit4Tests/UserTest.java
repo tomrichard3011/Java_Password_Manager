@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Tests that User setters, getters, and constructors
+ */
 public class UserTest {
     User user;
     String username;

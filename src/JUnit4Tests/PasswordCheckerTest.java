@@ -11,6 +11,9 @@ import java.util.Date;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests that password generation checks are working
+ */
 public class PasswordCheckerTest {
     @Test
     public void badPasswordLength(){

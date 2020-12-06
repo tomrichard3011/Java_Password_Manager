@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * Creates left side window for list of domains
+ */
 public class DomainInfoListView extends JPanel {
 	/** GUI List of Domains and their associated information */
     final JList<DomainInfo> list;
