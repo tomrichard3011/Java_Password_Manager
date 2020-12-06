@@ -11,7 +11,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
@@ -30,6 +29,7 @@ hs_err_pid*
 /bin/
 /images/
 /data/
+/out/
 
 # OS files
 .DS_Store
@@ -37,5 +37,4 @@ hs_err_pid*
 
 # Test Case files
 *.xyt
-/xmlTests/
-/out/
+/xmlTests/c

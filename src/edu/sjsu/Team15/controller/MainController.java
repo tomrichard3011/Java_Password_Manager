@@ -59,7 +59,7 @@ public class MainController {
                 case GENERATE_PASSWORD:
                     generate(message);
                     break;
-//                case SET_USERNAME: // TODO EDIT DATABASE ENTRIES
+//                case SET_USERNAME:
 //                    set_username(message);
 //                    break;
 //                case SET_PASSWORD:
