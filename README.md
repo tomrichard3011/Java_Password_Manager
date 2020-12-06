@@ -3,10 +3,12 @@
 A password manager that obfuscates passwords in memory and can save them to an encrypted file.
 This program can also generate cryptographically secure passwords using the computers CSPRNG.
 
-This program is also dependant on third party libraries.
+This program is also dependant on third party libraries. 
+All code within the edu.sjsu.Team15 package is our code, including the EntryPoint.java and Main.java.
 They've already been included in our code, however you can find them here:
-https://github.com/mklemm/base-n-codec-java
-https://github.com/NovaCrypto/SecureString
+Package:                             Link:
+net.codesup.utilities.basen          https://github.com/mklemm/base-n-codec-java
+io.github.novacrypto                 https://github.com/NovaCrypto/SecureString
 
 
 Note:
