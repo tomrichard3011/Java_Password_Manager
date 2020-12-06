@@ -13,7 +13,7 @@ Package:<br>
 
 Note:<br>
 1.If you are running this program on linux, you need to have XClip installed for the copy password function to work.<br>
-2.If you decide to run the JUnit tests, XMLTests will generate extra files.<br>
+2.If you decide to run the JUnit tests, some test will generate extra files in the current directory.<br>
 <br>
 Known bugs:<br>
 Occasionally, the password generator will create a password with an invalid ASCII character.<br>

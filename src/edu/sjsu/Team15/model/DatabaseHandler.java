@@ -1,12 +1,5 @@
 package edu.sjsu.Team15.model;
 
-/*
- * Sources:
- * https://mkyong.com/java/how-to-convert-file-into-an-array-of-bytes/
- * https://docs.oracle.com/javase/7/docs/api/java/io/File.html
- * https://stackoverflow.com/questions/4350084/byte-to-file-in-java
- */
-
 import edu.sjsu.Team15.utility.CryptoUtil;
 import io.github.novacrypto.SecureCharBuffer;
 import java.nio.file.Files;
@@ -21,8 +14,25 @@ import org.w3c.dom.Document;
 
 import java.io.*;
 
+/**
+ * Standard File Handler
+ * Offers standard methods for encrypting and decrypting, handling the decrypted file,
+ * and having a few additional methods for working with java xml objects.
+ * 
+ * Notes: It can't determine if the file is safe or formatted correctly, so the function
+ * relies on the program for it to be used safely and properly. With more time, a
+ * verification function can be added, but for the time being, use these classes with
+ * caution.
+ * 
+ * @author Nicolas Guerrero
+ * Sources: https://mkyong.com/java/how-to-convert-file-into-an-array-of-bytes/
+ * https://docs.oracle.com/javase/7/docs/api/java/io/File.html
+ * https://stackoverflow.com/questions/4350084/byte-to-file-in-java
+ */
 public abstract class DatabaseHandler {
+	/** The file location of the encrypted xml file. Usually ends with .xyt extension */
 	private File secureFile;
+	/** The file location of the decrypted xml file. Should point in the temporary directory */
 	private File activeFile;
 	
 	/**

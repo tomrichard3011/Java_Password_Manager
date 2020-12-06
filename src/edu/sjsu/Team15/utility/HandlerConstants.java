@@ -1,5 +1,10 @@
 package edu.sjsu.Team15.utility;
 
+/**
+ * Stores constants used for getting certain file operations
+ * XML denotes constants for the user file, and DOMAIN denotes constants for the domain file
+ * @author Nicolas Guerrero
+ */
 public class HandlerConstants {
 	// User File Constants
 	public static final int XMLUSER = 0;
