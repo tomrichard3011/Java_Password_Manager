@@ -15,30 +15,42 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * JUnit4 Test Cases for DatabaseHandler and subclasses
+ * 
  * Notes:
  * For every test case, a new user file is generated, to prevent issues in other tests.
  * Considering moving to @before, but some test cases could be designed around that, so 
  * it's left open. Just be careful when adding test cases.
- * 
  * @author Nicolas Guerrero
  */
 public class XMLTest {
-	// Basic File Necessities
+	/** The file separator for use across various operating systems */
 	String fileSep;
+	/** The file path for the project directory */
 	String directoryPath;
+	/** The file path to the user file used in testing */
 	String userFilePath;
 	
-	// Sample Users
+	/** Generic user 1: Hold information for quick user construction on file in test cases */
 	User user1;
+	/** Generic user 2: Hold information for quick user construction on file in test cases */
 	User user2;
+	/** Generic user 3: Hold information for quick user construction on file in test cases */
 	User user3;
 	
-	// Corresponding sample domain lists (may or may not use)
+	/** Generic domain list 1: Hold information for quick user construction on file in test cases */
 	ArrayList<DomainInfo> domain1;
+	/** Generic domain list 2: Hold information for quick user construction on file in test cases */
 	ArrayList<DomainInfo> domain2;
+	/** Generic domain list 3: Hold information for quick user construction on file in test cases */
 	ArrayList<DomainInfo> domain3;
 	
 	@Before
+	/**
+	 * Initialize all of the variables that could possibly be needed for a test case
+	 * File should be rewritten in the test cases, this process does not rewrite it
+	 * @throws Exception
+	 */
     public void initialize() throws Exception
     {
 		// File Management System
@@ -89,9 +101,8 @@ public class XMLTest {
 		domain3.add(new DomainInfo("steam", "useq3", subpass3));
     }
 	
-	// Testing the handlers raw
-	
 	@Test
+	/** Test that empty files can be created and work properly. */
 	public void createEmptyFiles() {
 		try {
 			// Empty User File
@@ -110,6 +121,7 @@ public class XMLTest {
 	}
 	
     @Test
+    /** Test that a user can be properly added */
     public void addAUser() {
     	try {
     		// Create user file
@@ -132,6 +144,7 @@ public class XMLTest {
     }
     
     @Test
+    /** Test that multiple users can be properly added */
     public void addMultipleUsers() {
     	try {
     		// Create user file
@@ -153,6 +166,7 @@ public class XMLTest {
     }
     
     @Test
+    /** Test that domains can be written and fetched */
     public void testBasicDomains() {
     	try {
     		// Create user file
@@ -182,6 +196,7 @@ public class XMLTest {
     }
     
     @Test
+    /** Test that users can be removed from the user file */
 	public void deleteAUser() {
 		try {
 			// Empty User File
@@ -207,6 +222,7 @@ public class XMLTest {
 	}
     
     @Test
+    /** Test that the user can be properly edited, including the associated domain file access */
 	public void editAUserUsername() {
 		try {
 			// Empty User File
