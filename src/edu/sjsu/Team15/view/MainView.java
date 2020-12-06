@@ -9,11 +9,17 @@ import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MainView extends JFrame {
+	/** Left Side Panel: List View */
     public final DomainInfoListView domainInfoListView;
+    /** Right Side Panel: Domain Information */
     public final DomainInfoView domainInfoView;
+    /** Add button */
     private final JButton addDomainButton = new JButton("Add Domain");
+    /** Settings button */
     private final JButton settingsButton = new JButton("Settings");
+    /** Action Listener */
     private final ButtonPress buttonPressListener = new ButtonPress();
+    /** Message queue for the whole application */
     private final LinkedBlockingQueue<Message> queue;
 
     /**
@@ -39,7 +45,7 @@ public class MainView extends JFrame {
         this.add(settingsButton);
         this.SpringLayoutSetup(layout);
 
-        this.setPreferredSize(new Dimension(500, 450));
+        this.setPreferredSize(new Dimension(500, 500));
         this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.pack();

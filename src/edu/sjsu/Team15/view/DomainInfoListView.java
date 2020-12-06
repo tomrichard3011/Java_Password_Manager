@@ -7,7 +7,9 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class DomainInfoListView extends JPanel {
+	/** GUI List of Domains and their associated information */
     final JList<DomainInfo> list;
+    /** The internal ArrayList of all the domains */
     final ArrayList<DomainInfo> domainInfoArrayList; // TODO ADD NEW DOMAIN
 
     /**

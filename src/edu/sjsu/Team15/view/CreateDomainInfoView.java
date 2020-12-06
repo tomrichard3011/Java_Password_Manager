@@ -12,26 +12,34 @@ import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class CreateDomainInfoView extends JFrame{
-    private final JFrame frame = this; // reference for action listener;
-
+	/** The window frame */
+    private final JFrame frame = this;
+    /** Subdomain Label */
     private final JLabel domainLabel = new JLabel("Enter domain: www.");
+    /** Top Level Domain Label */
     private final JLabel domainExtLabel = new JLabel(".com");
+    /** User Label */
     private final JLabel usernameLabel = new JLabel("Enter username:");
+    /** Password Label */
     private final JLabel passLabel = new JLabel("Enter password:");
+    /** Random Check Label */
     private final JLabel randomPassLabel = new JLabel("Randomize Password");
 
+    /** Domain Text Input */
     private final JTextField domainInput = new JTextField();
+    /** User Text Input */
     private final JTextField usernameInput = new JTextField();
+    /** Pass Text Input */
     private final JPasswordField passField = new JPasswordField();
-
+    /** Submit Button */
     private final JButton addCreds = new JButton("add Credentials");
-
+    /** Checkbox */
     private final JCheckBox randomPass = new JCheckBox();
-
+    /** Layout Object */
     private final SpringLayout layout = new SpringLayout();
-
+    /** Message Queue for the whole application */
     private final LinkedBlockingQueue<Message> queue;
-
+    /** Determine if we use random generation */
     private boolean random;
 
     /**
@@ -66,7 +74,7 @@ public class CreateDomainInfoView extends JFrame{
         SpringLayoutSetup(layout);
 
         // frame setups
-        this.setPreferredSize(new Dimension(350, 150));
+        this.setPreferredSize(new Dimension(350, 250));
         this.setResizable(false);
         this.pack();
         this.setVisible(true);
@@ -134,8 +142,8 @@ public class CreateDomainInfoView extends JFrame{
                 SpringLayout.HORIZONTAL_CENTER, passField);
 
         // Add credential button
-        layout.putConstraint(SpringLayout.SOUTH, addCreds, -10,
-                SpringLayout.SOUTH, this);
+        layout.putConstraint(SpringLayout.NORTH, addCreds, 10,
+                SpringLayout.SOUTH, randomPass);
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, addCreds, 0,
                 SpringLayout.HORIZONTAL_CENTER, this);
     }

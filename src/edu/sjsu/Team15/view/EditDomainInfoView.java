@@ -9,15 +9,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class EditDomainInfoView extends JFrame{
+	/** The frame for holding edit window */
     private final JFrame frame = this;
+    /** The edit button  */
     private final JButton editButton = new JButton("Edit");
 
+    /** User Label */
     private final JLabel usernameLabel = new JLabel("Enter username:");
+    /** Password Label */
     private final JLabel passwordLabel = new JLabel("Enter password:");
 
+    /** User Input */
     private final JTextField usernameField = new JTextField();
+    /** Password Input */
     private final JPasswordField passwordField = new JPasswordField();
 
+    /** Layout Object */
     private final SpringLayout layout = new SpringLayout();
 
     /**
@@ -60,7 +67,7 @@ public class EditDomainInfoView extends JFrame{
         springLayoutSetup();
 
         // frame setups
-        this.setPreferredSize(new Dimension(350, 110));
+        this.setPreferredSize(new Dimension(350, 150));
         this.setResizable(false);
         this.pack();
         this.setVisible(true);
@@ -93,8 +100,8 @@ public class EditDomainInfoView extends JFrame{
                 SpringLayout.WEST, passwordField);
 
         // Edit button
-        layout.putConstraint(SpringLayout.SOUTH, editButton, -10,
-                SpringLayout.SOUTH, this);
+        layout.putConstraint(SpringLayout.NORTH, editButton, 10,
+                SpringLayout.SOUTH, passwordLabel);
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, editButton, 0,
                 SpringLayout.HORIZONTAL_CENTER, this);
     }
