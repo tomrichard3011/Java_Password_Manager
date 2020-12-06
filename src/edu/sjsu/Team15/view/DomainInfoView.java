@@ -12,6 +12,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Right side window holding information and options for a single domain
+ */
 public class DomainInfoView extends JPanel{
     // Actual Object temporary
 	/** DomainInfo object (Holds domain information) */

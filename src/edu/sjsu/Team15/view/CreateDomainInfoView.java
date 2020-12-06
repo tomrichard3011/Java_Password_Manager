@@ -11,6 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Create window for adding in domains
+ */
 public class CreateDomainInfoView extends JFrame{
 	/** The window frame */
     private final JFrame frame = this;

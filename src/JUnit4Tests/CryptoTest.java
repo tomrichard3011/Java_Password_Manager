@@ -7,7 +7,9 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-
+/**
+ * Testing various encryption algorithms and checking that they work
+ */
 public class CryptoTest {
     byte[] password;
     SecureCharBuffer key;
