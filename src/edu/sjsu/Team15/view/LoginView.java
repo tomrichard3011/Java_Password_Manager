@@ -11,13 +11,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class LoginView extends JFrame{ //TODO
+public class LoginView extends JFrame{
+	/** Buttons on the login page */
     JButton login, newAcc;
+    /** Action Listener for the login button */
     LoginButtonPress loginButtonListener;
+    /** Message Queue for the whole application*/
     LinkedBlockingQueue<Message> queue;
+    /** Labels */
     JLabel username, password, alert;
+    /** User Input */
     JTextField un;
+    /** Special Password Input (Hides password) */
     JPasswordField pass;
+    /** The frame */
     JFrame frame = this;
 
     /**

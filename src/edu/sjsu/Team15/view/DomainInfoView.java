@@ -14,19 +14,29 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DomainInfoView extends JPanel{
     // Actual Object temporary
+	/** DomainInfo object (Holds domain information) */
     private DomainInfo domainInfo;
+    /** Message queue for the whole application */
     private final LinkedBlockingQueue<Message> queue;
 
     // JComponents
+    /** Domain Text Label */
     private final JLabel domain;
+    /** Logo Text Label */
     private final JLabel logo;
+    /** User Text Label */
     private final JLabel username;
 
+    /** upLead caption */
     private final JLabel upleadAttribution;
 
+    /** Submit Edit Request */
     private final JButton editButton;
+    /** Submit Delete Request */
     private final JButton deleteButton;
+    /** Submit Copy Password to Clipboard Request */
     private final JButton copyPassButton;
+    /** Submit Generate a New Password Request */
     private final JButton genNewPassButton;
 
     // Listener for all buttons

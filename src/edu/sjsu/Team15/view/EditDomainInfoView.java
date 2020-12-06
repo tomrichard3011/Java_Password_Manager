@@ -9,15 +9,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class EditDomainInfoView extends JFrame{
+	/** The frame for holding edit window */
     private final JFrame frame = this;
+    /** The edit button  */
     private final JButton editButton = new JButton("Edit");
 
+    /** User Label */
     private final JLabel usernameLabel = new JLabel("Enter username:");
+    /** Password Label */
     private final JLabel passwordLabel = new JLabel("Enter password:");
 
+    /** User Input */
     private final JTextField usernameField = new JTextField();
+    /** Password Input */
     private final JPasswordField passwordField = new JPasswordField();
 
+    /** Layout Object */
     private final SpringLayout layout = new SpringLayout();
 
     /**
