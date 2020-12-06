@@ -21,16 +21,26 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 /**
- * Currently working, more documentation to come
+ * File Handler for user files
+ * 
+ * Class is designed to edit to existing user file, which can be created by a static method
+ * available in this class.
+ * 
+ * Note: Previous iterations had master and salt variables set, before universal encryption
+ * and decryption methods were available. Both are now unused, but could be re-implemented
+ * quickly if there's a use. For now, leave both as null and just use the 1-arg constructor.
+ * 
+ * 
  * @author Nicolas Guerrero
+ * Sources: File Read: https://mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
+ * XPath Parser: https://www.baeldung.com/java-xpath
  */
-
-// Sources: File Read: https://mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
-// XPath Parser: https://www.baeldung.com/java-xpath
-
 public class UserHandler extends DatabaseHandler {
+	/** The file location of the decrypted file */
 	private File database;
+	/** The buffer used for encryption (Unused, soon to be deprecated) */
 	private SecureCharBuffer master;
+	/** The salt used for encryption (Unused, soon to be deprecated) */
 	private String salt;
 	
 	// Constructors ------------------------------------------------------------	

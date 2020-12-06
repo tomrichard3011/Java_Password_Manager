@@ -17,9 +17,24 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
+/**
+ * File Handler for lists of domains
+ * Class is designed around reading and writing full list of domains. Unlike
+ * UserHandler, all edits must occur on the DomainInfo objects themselves, this
+ * is only for getting and securely saving files.
+ * 
+ * Note: Be careful if you edit the user object, as another DomainHandler must be built
+ * to work with the new file.
+ * 
+ * @author Nicolas Guerrero
+ * Sources: Mostly derived from UserHandler
+ */
 public class DomainHandler extends DatabaseHandler {
+	/** The file location of the decrypted file */
 	private File database;
+	/** The buffer used for encryption */
 	private SecureCharBuffer master;
+	/** The salt used for encryption */
 	private String salt;
 
 	/**
