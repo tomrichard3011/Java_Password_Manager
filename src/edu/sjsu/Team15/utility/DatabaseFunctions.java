@@ -42,6 +42,7 @@ public class DatabaseFunctions {
      */
     public static User verifyUser(String username, SecureCharBuffer password) {
         UserHandler userHandler = createUserHandler();
+        if (!ALL_USERS_FILE.exists()) return null;
         return userHandler.verifyUser(username, password);
     }
 

@@ -24,15 +24,19 @@ public class EntryPoint {
         User user = loginController.run();
 
         // Main view linking and setup
+        // set first domain to be displayed
         DomainInfo firstDomain;
-        if (user.getDomainInfoArray().size() == 0) firstDomain = new DomainInfo("", "", new SecureCharBuffer());
-        else firstDomain = user.getDomainInfoArray().get(0);
+        firstDomain = (user.getDomainInfoArray().size() == 0) ? new DomainInfo("Create a Domain", "", new SecureCharBuffer()) : user.getDomainInfoArray().get(0);
 
+        // create JComponents
         DomainInfoView domainInfoView = new DomainInfoView(firstDomain, queue);
         DomainInfoListView domainInfoListView = new DomainInfoListView(user.getDomainInfoArray(), domainInfoView);
 
+        // create main view
         MainView frame = new MainView(domainInfoListView, domainInfoView, queue);
         MainController mainController = new MainController(user, frame, queue);
+
+        // run main loop
         mainController.run();
     }
 }
