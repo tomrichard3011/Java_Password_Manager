@@ -20,6 +20,11 @@ public class ClipboardManager implements Runnable {
         this.charBuffer = charBuffer;
     }
 
+    /**
+     * Copy to clipboard
+     * @param charBuffer password
+     * @param clearTime clear time to use
+     */
     public static void copyToClip(SecureCharBuffer charBuffer, int clearTime) {
         StringBuilder password = new StringBuilder();
         password.append(charBuffer.toStringAble());

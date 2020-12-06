@@ -37,3 +37,5 @@ hs_err_pid*
 
 # Test Case files
 *.xyt
+/src/META-INF/
+/xmlTests/
