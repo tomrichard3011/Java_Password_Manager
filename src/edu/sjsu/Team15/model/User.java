@@ -33,10 +33,10 @@ public class User {
     
     /**
      * Create user object, without the list of domains
-     * @param clipboardClearTime The time a password will stay on the computer clipboard
-     * @param domainInfoArray The list of domains
      * @param username The username and salt for encryption
-     * @param masterKey The password and key for encryption
+     * @param password The password and key for encryption
+     * @param clipboardTime The time a password will stay on the computer clipboard
+     * @param filepath file path for user's domains
      */
     public User(String username, SecureCharBuffer password, int clipboardTime, String filepath) {
     	this.username = username;

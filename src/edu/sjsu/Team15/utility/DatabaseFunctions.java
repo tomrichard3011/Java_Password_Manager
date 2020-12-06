@@ -8,7 +8,9 @@ import io.github.novacrypto.SecureCharBuffer;
 import java.io.File;
 
 public class DatabaseFunctions {
+    /** System specific file separator */
     private final static String fileSep = System.getProperty("file.separator");
+    /** HardCoded file path for file that contains all user credentials */
     private final static File ALL_USERS_FILE = new File(System.getProperty("user.dir") + fileSep + "data" + fileSep + "ALL_USERS.enc");
 
     /**
@@ -42,6 +44,7 @@ public class DatabaseFunctions {
      */
     public static User verifyUser(String username, SecureCharBuffer password) {
         UserHandler userHandler = createUserHandler();
+        if (!ALL_USERS_FILE.exists()) return null;
         return userHandler.verifyUser(username, password);
     }
 

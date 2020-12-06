@@ -12,10 +12,15 @@ import io.github.novacrypto.SecureCharBuffer;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MainController {
+    /** User to be updated and get information from */
     User user;
+    /** Main GUI view */
     MainView mainView;
+    /** JComponent of mainView */
     DomainInfoView domainInfoView;
+    /** JComponent of mainView */
     DomainInfoListView domainInfoListView;
+    /** Command queue that holds messages to be processed */
     LinkedBlockingQueue<Message> queue;
 
     /**
@@ -59,12 +64,6 @@ public class MainController {
                 case GENERATE_PASSWORD:
                     generate(message);
                     break;
-//                case SET_USERNAME: // TODO EDIT DATABASE ENTRIES
-//                    set_username(message);
-//                    break;
-//                case SET_PASSWORD:
-//                    set_password(message);
-//                    break;
                 case SET_CLEARTIME:
                     set_clearTime(message);
                     break;
@@ -125,14 +124,6 @@ public class MainController {
     private void generate(Message message) {
         message.getDomainInfo().genNewPassword();
     }
-
-//    private void set_username(Message message) { // TODO set credentials in Database
-//        DatabaseFunctions.editUserName(user.getUsername(), user.getMasterKey(), message.getUsername());
-//    }
-//
-//    private void set_password(Message message) { // TODO set credentials in Database
-//        DatabaseFunctions.editUserPass(user.getUsername(), user.getMasterKey(), message.getPassword());
-//    }
 
     /**
      * Changes cleartime for a user

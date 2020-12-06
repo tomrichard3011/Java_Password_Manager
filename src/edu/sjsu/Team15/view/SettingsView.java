@@ -1,5 +1,4 @@
 package edu.sjsu.Team15.view;
-// TODO
 
 import edu.sjsu.Team15.utility.Message;
 
@@ -71,7 +70,7 @@ public class SettingsView extends JFrame {
     /**
      * Action button listener for all buttons
      */
-    class SettingButtonListener implements ActionListener { //TODO
+    class SettingButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             Object source = actionEvent.getSource();
