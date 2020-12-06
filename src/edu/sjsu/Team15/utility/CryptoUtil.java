@@ -34,7 +34,7 @@ public class CryptoUtil {
     // https://howtodoinjava.com/java/java-security/aes-256-encryption-decryption/
     /**
      * Symmetric key encryption using a secret key and username as salt
-     * @param secureKey
+     * @param secureKey Master key to encrypt
      * @param salt salt used for encryption
      * @param input plain text data to encrypt
      * @return ciphertext as variable length byte array
@@ -101,7 +101,7 @@ public class CryptoUtil {
     /**
      * Decryption using user specific data as encryption key
      * @param input encrypted data
-     * @return
+     * @return decrypted data
      */
     // TODO NOT SECURE, need a reliable way of creating machine specific keys
     public static byte[] universalDecrypt(byte[] input) {
@@ -122,9 +122,8 @@ public class CryptoUtil {
         return AnyBaseEncoder.BASE_94.encode(input).getBytes();
     }
 
-    // SHA3-256 with character output
     /**
-     * Sha3-256
+     * Sha3-256 with char[] output used internally
      * @param salt salt used for hashing
      * @param input data to hash
      * @return always returns 32 char[]
@@ -145,7 +144,7 @@ public class CryptoUtil {
      * Gets hash of of secureCharBuffer
      * @param salt salt used for hashing
      * @param secureKey key to transform into hash
-     * @return
+     * @return char[] of masterkey
      */
     private static char[] parseMasterKey(String salt, SecureCharBuffer secureKey) {
         byte[] byteMasterKey = new byte[secureKey.capacity()];
@@ -158,19 +157,22 @@ public class CryptoUtil {
      * Helper method for AES
      * @param secureKey Master key for encryption
      * @param salt salt for encryption
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
+     * @return SecretKey Spec used for AES encryption
      */
-    private static SecretKeySpec AESHelper(SecureCharBuffer secureKey, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private static SecretKeySpec AESHelper(SecureCharBuffer secureKey, String salt) {
         char[] masterKey = parseMasterKey(salt, secureKey);
-
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(masterKey, // secret key
-                salt.getBytes(), // salt
-                65536, // iteration count
-                256); // key length
-        SecretKey tmp = factory.generateSecret(spec);
+        SecretKey tmp = null;
+        try {
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            KeySpec spec = new PBEKeySpec(masterKey, // secret key
+                    salt.getBytes(), // salt
+                    65536, // iteration count
+                    256); // key length
+            tmp = factory.generateSecret(spec);
+        }
+        catch (Exception e) {
+            System.exit(1);
+        }
         return new SecretKeySpec(tmp.getEncoded(), "AES");
     }
 }

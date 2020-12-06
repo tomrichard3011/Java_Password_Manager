@@ -1,6 +1,6 @@
 package edu.sjsu.Team15.view;
 
-import edu.sjsu.Team15.Message;
+import edu.sjsu.Team15.utility.Message;
 import io.github.novacrypto.SecureCharBuffer;
 
 import javax.swing.JTextField;
@@ -20,6 +20,10 @@ public class LoginView extends JFrame{ //TODO
     JPasswordField pass;
     JFrame frame = this;
 
+    /**
+     * Constructor
+     * @param queue thread safe queue to send commands to
+     */
     public LoginView(LinkedBlockingQueue<Message> queue){
         //variables for text field and label
         this.queue = queue;
@@ -74,20 +78,32 @@ public class LoginView extends JFrame{ //TODO
         frame.setVisible(true);
     }
 
+    /**
+     * lets user know that credentials are not valid
+     */
     public void invalidCreationAlert() {
         alert.setText("Cannot create user with those credentials");
         frame.revalidate();
     }
 
+    /**
+     * lets user know to enter credentials
+     */
     public void enterCredsAlert() {
         alert.setText("Please enter your credentials again");
         frame.revalidate();
     }
 
+    /**
+     * lets user know that the credentials are invalid
+     */
     public void invalidCredsAlert() {
         alert.setText("Invalid credentials entered");
     }
 
+    /**
+     * Button Action Listener
+     */
     private class LoginButtonPress implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -96,12 +112,11 @@ public class LoginView extends JFrame{ //TODO
             SecureCharBuffer charBuffer = new SecureCharBuffer();
             for (char c : pass.getPassword()) {
                 charBuffer.append(c);
-                c = '\0'; // null password as we append
+                c = '\0';
             }
 
             // do nothing if login is empty.
             if (charBuffer.length() == 0 || un.getText().equals("")) return;
-
 
             // put data into message
             message.setUsername(un.getText());

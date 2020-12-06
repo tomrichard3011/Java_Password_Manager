@@ -1,7 +1,7 @@
 package edu.sjsu.Team15.view;
 
 import edu.sjsu.Team15.model.DomainInfo;
-import edu.sjsu.Team15.Message;
+import edu.sjsu.Team15.utility.Message;
 import edu.sjsu.Team15.utility.PasswordGenerator;
 import io.github.novacrypto.SecureCharBuffer;
 
@@ -34,6 +34,10 @@ public class CreateDomainInfoView extends JFrame{
 
     private boolean random;
 
+    /**
+     * constructor
+     * @param queue thread safe queue to send commands to
+     */
     public CreateDomainInfoView(LinkedBlockingQueue<Message> queue) {
         this.queue = queue;
 
@@ -68,6 +72,10 @@ public class CreateDomainInfoView extends JFrame{
         this.setVisible(true);
     }
 
+    /**
+     * setup for spring layout
+     * @param layout layout used for frame
+     */
     private void SpringLayoutSetup(SpringLayout layout) {
         // input fields
         // domain input
@@ -132,6 +140,9 @@ public class CreateDomainInfoView extends JFrame{
                 SpringLayout.HORIZONTAL_CENTER, this);
     }
 
+    /**
+     * Action listener for when a button is pressed
+     */
     private class ButtonPress implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {

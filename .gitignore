@@ -29,6 +29,7 @@ hs_err_pid*
 .bin/
 /bin/
 /images/
+/data/
 
 # OS files
 .DS_Store

@@ -1,8 +1,7 @@
 package edu.sjsu.Team15.view;
 // TODO
 
-import edu.sjsu.Team15.Message;
-import io.github.novacrypto.SecureCharBuffer;
+import edu.sjsu.Team15.utility.Message;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +26,8 @@ public class SettingsView extends JFrame {
     private final JFrame frame = this;
 
     /**
-     * Create the frame.
+     * Constructor
+     * @param queue thread safe queue to send commands
      */
     public SettingsView(LinkedBlockingQueue<Message> queue) {
         this.queue = queue;
@@ -73,6 +73,10 @@ public class SettingsView extends JFrame {
         this.setVisible(true);
     }
 
+    /**
+     * Spring layout setup
+     * @param layout layout for this frame
+     */
     private void SpringLayoutSetup(SpringLayout layout) {
         // USERNAME LAYOUT
         // user button
@@ -111,6 +115,9 @@ public class SettingsView extends JFrame {
                 SpringLayout.HORIZONTAL_CENTER, this);
     }
 
+    /**
+     * Action button listener for all buttons
+     */
     class SettingButtonListener implements ActionListener { //TODO
         @Override
         public void actionPerformed(ActionEvent actionEvent) {

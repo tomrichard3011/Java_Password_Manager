@@ -1,8 +1,6 @@
 package edu.sjsu.Team15.view;
 
-import edu.sjsu.Team15.Message;
-import edu.sjsu.Team15.view.DomainInfoListView;
-import edu.sjsu.Team15.view.DomainInfoView;
+import edu.sjsu.Team15.utility.Message;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +16,12 @@ public class MainView extends JFrame {
     private final ButtonPress buttonPressListener = new ButtonPress();
     private final LinkedBlockingQueue<Message> queue;
 
+    /**
+     * Constructor
+     * @param domainInfoListView Sub component that displays all domain infos for user
+     * @param domainInfoView sub component that display first domain info
+     * @param queue thread safe queue to send commands to
+     */
     public MainView(DomainInfoListView domainInfoListView, DomainInfoView domainInfoView, LinkedBlockingQueue<Message> queue) {
         this.domainInfoListView = domainInfoListView;
         this.domainInfoView = domainInfoView;
@@ -42,6 +46,10 @@ public class MainView extends JFrame {
         this.setVisible(true);
     }
 
+    /**
+     * Spring layout setup
+     * @param layout layout for this frame
+     */
     private void SpringLayoutSetup(SpringLayout layout) {
         // Domain Info List
         layout.putConstraint(SpringLayout.NORTH, domainInfoListView, 0,
@@ -82,12 +90,10 @@ public class MainView extends JFrame {
             Message message = new Message();
 
             if (source == addDomainButton) {
-                System.out.println("Add domain");
                 message.action = Message.Action.CREATE_DOMAININFO_MENU;
                 queue.add(message);
             }
             if (source == settingsButton) {
-                System.out.println("Settings");
                 message.action = Message.Action.SETTINGS_MENU;
                 queue.add(message);
             }

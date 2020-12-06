@@ -1,7 +1,7 @@
 package edu.sjsu.Team15.controller;
 
 
-import edu.sjsu.Team15.Message;
+import edu.sjsu.Team15.utility.Message;
 import edu.sjsu.Team15.utility.DatabaseFunctions;
 import edu.sjsu.Team15.model.User;
 import edu.sjsu.Team15.view.LoginView;
@@ -14,11 +14,20 @@ public class LoginController {
     LinkedBlockingQueue<Message> queue;
     LoginView loginView;
 
+    /**
+     * Constructor
+     * @param queue thread safe queue that holds all commands
+     * @param loginView view to link to
+     */
     public LoginController(LinkedBlockingQueue<Message> queue, LoginView loginView){
         this.queue = queue;
         this.loginView = loginView;
     }
 
+    /**
+     * Loop through commands until we get a valid user
+     * @return Valid user found in database
+     */
     public User run() {
         while (true) {
             Message message = null;
@@ -30,7 +39,6 @@ public class LoginController {
 
             switch (message.action) {
                 case LOGIN:
-                    System.out.println("login");
                     User user = validateUser(message);
                     if (user != null) {
                         loginView.dispose();
@@ -38,7 +46,6 @@ public class LoginController {
                     }
                     break;
                 case NEW_USER:
-                    System.out.println("new user");
                     createUser(message);
                     break;
                 default:
@@ -47,6 +54,11 @@ public class LoginController {
         }
     }
 
+    /**
+     * Checks if user exists in database
+     * @param message Message that contains extra data
+     * @return Valid user
+     */
     private User validateUser(Message message) { // TODO
         String username = message.getUsername();
         SecureCharBuffer charBuffer = message.getPassword();
@@ -56,6 +68,10 @@ public class LoginController {
         return user;
     }
 
+    /**
+     * Creates a user in the database
+     * @param message Message that contains extra data
+     */
     private void createUser(Message message) { // TODO
         String username = message.getUsername();
         SecureCharBuffer charBuffer = message.getPassword();

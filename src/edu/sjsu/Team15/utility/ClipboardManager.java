@@ -116,9 +116,6 @@ public class ClipboardManager implements Runnable {
         copyToClip(this.charBuffer, this.clearTime);
     }
 
-    /**
-     * Operating system enum
-     */
     private enum OS {
         LINUX,
         WINDOWS,
