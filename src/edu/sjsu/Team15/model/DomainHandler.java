@@ -6,8 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import edu.sjsu.Team15.HandlerConstants;
 import edu.sjsu.Team15.utility.CryptoUtil;
+import edu.sjsu.Team15.utility.HandlerConstants;
 import io.github.novacrypto.SecureCharBuffer;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
