@@ -43,19 +43,34 @@ public class UserTest {
     }
 
     @Test
-    public void setgetClipboardClearTime() {
+    public void getClipboardClearTime() {
+        assertEquals(5, user.getClipboardClearTime());
+    }
+
+    @Test
+    public void getUsername() {
+        assertEquals("Steve", user.getUsername());
+    }
+
+    @Test
+    public void getPassword() {
+        assertEquals("password", user.getMasterKey().toStringAble().toString());
+    }
+
+    @Test
+    public void setClipboardClearTime() {
         user.setClipboardClearTime(3);
         assertEquals(3, user.getClipboardClearTime());
     }
 
     @Test
-    public void setgetUsername() {
+    public void setUsername() {
         user.setUsername("new name");
         assertEquals("new name", user.getUsername());
     }
 
     @Test
-    public void setgetPassword() {
+    public void setPassword() {
         SecureCharBuffer newPass = new SecureCharBuffer();
         newPass.append("new password");
         user.setMasterKey(newPass);
@@ -63,7 +78,7 @@ public class UserTest {
     }
 
     @Test
-    public void setgetFileLocation() {
+    public void setFileLocation() {
         user.setFileLocation(new File(System.getProperty("user.home")));
         assertEquals(System.getProperty("user.home"), user.getFileLocation().getAbsolutePath());
     }
