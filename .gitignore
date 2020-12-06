@@ -29,6 +29,7 @@ hs_err_pid*
 .bin/
 /bin/
 /images/
+/data/
 
 # OS files
 .DS_Store
@@ -36,3 +37,5 @@ hs_err_pid*
 
 # Test Case files
 *.xyt
+/src/META-INF/
+/xmlTests/

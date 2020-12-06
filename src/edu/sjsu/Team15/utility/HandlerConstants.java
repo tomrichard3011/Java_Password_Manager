@@ -1,4 +1,4 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.utility;
 
 public class HandlerConstants {
 	// User File Constants

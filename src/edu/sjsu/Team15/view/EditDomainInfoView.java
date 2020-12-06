@@ -20,7 +20,11 @@ public class EditDomainInfoView extends JFrame{
 
     private final SpringLayout layout = new SpringLayout();
 
-
+    /**
+     * Constructor
+     * @param domainInfo domain info to edit
+     * @param domainInfoView domainInfo view to update
+     */
     public EditDomainInfoView(DomainInfo domainInfo, DomainInfoView domainInfoView) {
         this.setTitle(domainInfo.getDomain());
         usernameField.setColumns(10);
@@ -35,25 +39,22 @@ public class EditDomainInfoView extends JFrame{
         this.add(editButton);
         this.setLayout(layout);
 
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String user = usernameField.getText();
-                char[] pass = passwordField.getPassword();
-                SecureCharBuffer charBuffer = new SecureCharBuffer();
-                if (user == "") user = domainInfo.getUsername();
-                if (pass.length == 0) charBuffer = domainInfo.getPassword();
+        editButton.addActionListener(actionEvent -> {
+            String user = usernameField.getText();
+            char[] pass = passwordField.getPassword();
+            SecureCharBuffer charBuffer = new SecureCharBuffer();
+            if (user.equals("")) user = domainInfo.getUsername();
+            if (pass.length == 0) charBuffer = domainInfo.getPassword();
 
-                for (char c : pass) {
-                    charBuffer.append(c);
-                }
-
-                domainInfo.setUsername(user);
-                domainInfo.setPassword(charBuffer);
-
-                domainInfoView.updateDomainInfo(domainInfo);
-                frame.dispose();
+            for (char c : pass) {
+                charBuffer.append(c);
             }
+
+            domainInfo.setUsername(user);
+            domainInfo.setPassword(charBuffer);
+
+            domainInfoView.updateDomainInfo(domainInfo);
+            frame.dispose();
         });
 
         springLayoutSetup();
@@ -65,6 +66,9 @@ public class EditDomainInfoView extends JFrame{
         this.setVisible(true);
     }
 
+    /**
+     * Spring layout setup for this frame
+     */
     private void springLayoutSetup() {
         //Username labels and fields
         layout.putConstraint(SpringLayout.NORTH, usernameField, 10,

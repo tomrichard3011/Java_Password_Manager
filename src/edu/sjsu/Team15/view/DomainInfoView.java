@@ -1,7 +1,7 @@
 package edu.sjsu.Team15.view;
 
 import edu.sjsu.Team15.model.DomainInfo;
-import edu.sjsu.Team15.Message;
+import edu.sjsu.Team15.utility.Message;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -29,8 +29,14 @@ public class DomainInfoView extends JPanel{
     private final JButton copyPassButton;
     private final JButton genNewPassButton;
 
+    // Listener for all buttons
     ButtonPress buttonListener = new ButtonPress();
 
+    /**
+     * Constructor
+     * @param domainInfo domain info object to print to view
+     * @param queue command queue to send commands
+     */
     public DomainInfoView(DomainInfo domainInfo, LinkedBlockingQueue<Message> queue) {
         this.domainInfo = domainInfo;
         this.queue = queue;
@@ -67,6 +73,10 @@ public class DomainInfoView extends JPanel{
         springLayoutSetup((SpringLayout) this.getLayout());
     }
 
+    /**
+     * update which domain info is printed to view
+     * @param domainInfo domain info to print
+     */
     public void updateDomainInfo(DomainInfo domainInfo) {
         this.domainInfo = domainInfo; // set new domain info
 
@@ -79,6 +89,10 @@ public class DomainInfoView extends JPanel{
         this.revalidate();
     }
 
+    /**
+     * Spring layout setup
+     * @param layout spring layout for frame/component
+     */
     private void springLayoutSetup(SpringLayout layout) {
 
         // Domain name
@@ -131,6 +145,10 @@ public class DomainInfoView extends JPanel{
 
     }
 
+    /**
+     * get DomainInfo logo and convert it to an icon
+     * @return Image icon object to use in JLabel
+     */
     private ImageIcon getImageIcon() {
         BufferedImage image;
         try {
@@ -143,6 +161,9 @@ public class DomainInfoView extends JPanel{
         return new ImageIcon(image);
     }
 
+    /**
+     * Action listener for button presses
+     */
     private class ButtonPress implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {

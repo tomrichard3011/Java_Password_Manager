@@ -1,4 +1,4 @@
-package edu.sjsu.Team15;
+package edu.sjsu.Team15.utility;
 
 import edu.sjsu.Team15.model.DomainInfo;
 import io.github.novacrypto.SecureCharBuffer;

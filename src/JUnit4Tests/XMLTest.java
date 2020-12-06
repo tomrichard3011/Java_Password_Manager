@@ -2,7 +2,7 @@ package JUnit4Tests;
 import java.io.File;
 import java.util.ArrayList;
 
-import edu.sjsu.Team15.HandlerConstants;
+import edu.sjsu.Team15.utility.HandlerConstants;
 import edu.sjsu.Team15.model.DomainHandler;
 import edu.sjsu.Team15.model.DomainInfo;
 import edu.sjsu.Team15.model.User;

@@ -1,10 +1,9 @@
-package JUnit4Tests;
+package edu.sjsu.Team15;
 
-import edu.sjsu.Team15.*;
 import edu.sjsu.Team15.controller.LoginController;
 import edu.sjsu.Team15.controller.MainController;
 import edu.sjsu.Team15.model.DomainInfo;
-import edu.sjsu.Team15.utility.PasswordGenerator;
+import edu.sjsu.Team15.utility.Message;
 import edu.sjsu.Team15.model.User;
 import edu.sjsu.Team15.view.DomainInfoListView;
 import edu.sjsu.Team15.view.DomainInfoView;
@@ -12,13 +11,11 @@ import edu.sjsu.Team15.view.LoginView;
 import edu.sjsu.Team15.view.MainView;
 import io.github.novacrypto.SecureCharBuffer;
 
-import javax.swing.*;
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ViewTest {
-    public static void main(String[] args) {
-        // stuff needed for initialization
+public class EntryPoint {
+    public static void run() {
+        // Thread safe queue
         LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<>();
 
         // login view setup
@@ -26,11 +23,7 @@ public class ViewTest {
         LoginController loginController = new LoginController(queue, loginView);
         User user = loginController.run();
 
-        for (DomainInfo d : user.getDomainInfoArray()) {
-            System.out.println();
-        }
-
-        // LINKING EVERYTHING TOGETHER
+        // Main view linking and setup
         DomainInfo firstDomain;
         if (user.getDomainInfoArray().size() == 0) firstDomain = new DomainInfo("", "", new SecureCharBuffer());
         else firstDomain = user.getDomainInfoArray().get(0);

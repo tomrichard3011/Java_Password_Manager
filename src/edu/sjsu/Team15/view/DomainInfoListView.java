@@ -10,6 +10,11 @@ public class DomainInfoListView extends JPanel {
     final JList<DomainInfo> list;
     final ArrayList<DomainInfo> domainInfoArrayList; // TODO ADD NEW DOMAIN
 
+    /**
+     * Constructor
+     * @param domainInfoArrayList arraylist to print to view
+     * @param domainInfoView view to print to
+     */
     public DomainInfoListView(ArrayList<DomainInfo> domainInfoArrayList, DomainInfoView domainInfoView){
         this.domainInfoArrayList = domainInfoArrayList;
 
@@ -38,6 +43,9 @@ public class DomainInfoListView extends JPanel {
         this.add(scrollPane);
     }
 
+    /**
+     * function to update list data
+     */
     public void updateList() {
         list.setListData(domainInfoArrayList.toArray(new DomainInfo[0]));
         this.revalidate();
