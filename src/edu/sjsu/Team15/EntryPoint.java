@@ -13,7 +13,13 @@ import io.github.novacrypto.SecureCharBuffer;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Entry point for program.
+ */
 public class EntryPoint {
+    /**
+     * Initializes all data and links objects in order to run application.
+     */
     public static void run() {
         // Thread safe queue
         LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<>();

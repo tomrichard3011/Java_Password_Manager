@@ -9,6 +9,9 @@ import io.github.novacrypto.SecureCharBuffer;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Controls login functions
+ */
 public class LoginController {
     /** Command queue that holds messages to be processed */
     LinkedBlockingQueue<Message> queue;

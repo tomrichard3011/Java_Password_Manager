@@ -6,6 +6,9 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
+/**
+ * Handles copying to clipboard in a thread safe way
+ */
 public class ClipboardManager implements Runnable {
     /** Time before clipboard is cleared */
     private final int clearTime;

@@ -1,10 +1,12 @@
 package edu.sjsu.Team15.model;
 
-import edu.sjsu.Team15.model.DomainInfo;
 import io.github.novacrypto.SecureCharBuffer;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * Model for user, contains main username, main password, and all domains for a user
+ */
 public class User {
 	/** The amount of time that a password will stay on the computer's clipboard */
     private int clipboardClearTime;

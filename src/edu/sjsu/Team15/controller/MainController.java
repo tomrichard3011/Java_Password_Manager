@@ -11,6 +11,9 @@ import io.github.novacrypto.SecureCharBuffer;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Controls main loop functions
+ */
 public class MainController {
     /** User to be updated and get information from */
     User user;

@@ -10,6 +10,9 @@ import java.net.URL;
 import java.util.Date;
 
 
+/**
+ * Model that handles a domain. Contains username and password in a secure manner
+ */
 public class DomainInfo {
 	/** The website's name (i.e. domain) */
     private final String domain;

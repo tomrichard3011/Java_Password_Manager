@@ -7,6 +7,10 @@ import io.github.novacrypto.SecureCharBuffer;
 
 import java.io.File;
 
+/**
+ * Functions that are abstracted from UserHandler model
+ * to make usage database usage simpler
+ */
 public class DatabaseFunctions {
     /** System specific file separator */
     private final static String fileSep = System.getProperty("file.separator");

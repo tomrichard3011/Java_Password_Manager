@@ -11,10 +11,11 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
+/**
+ * Handles all functions dealing with cryptography, such as hashing, encryption, and some encoding
+ */
 public class CryptoUtil {
     /**
      * SHA3-256 hash function

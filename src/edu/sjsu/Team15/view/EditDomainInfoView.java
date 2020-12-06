@@ -8,6 +8,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Gui for when a user needs to edit a DomainInfo object
+ */
 public class EditDomainInfoView extends JFrame{
 	/** The frame for holding edit window */
     private final JFrame frame = this;

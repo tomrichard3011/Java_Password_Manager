@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * GUI for when user needs to change settings
+ */
 public class SettingsView extends JFrame {
 	/** The message queue for the entire application */
     private final LinkedBlockingQueue<Message> queue;

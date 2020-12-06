@@ -7,6 +7,9 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Date;
 
+/**
+ * Generates a random password that is cryptographically safe
+ */
 public class PasswordGenerator {
 
     /**
@@ -25,7 +28,7 @@ public class PasswordGenerator {
 
     /**
      * Generate a password with length 15 and then base 94 encoded
-     * @return
+     * @return password with 15 characters
      */
     private static SecureCharBuffer generatePasswordHelper() {
         int length = 15;

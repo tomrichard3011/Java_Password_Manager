@@ -3,6 +3,9 @@ package edu.sjsu.Team15.utility;
 import edu.sjsu.Team15.model.DomainInfo;
 import io.github.novacrypto.SecureCharBuffer;
 
+/**
+ * Stores data to be transferred between Model View and Controller
+ */
 public class Message {
     /** command to be processed */
     public Action action;

@@ -11,6 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Login GUI for startup
+ */
 public class LoginView extends JFrame{
 	/** Buttons on the login page */
     JButton login, newAcc;
