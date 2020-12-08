@@ -82,9 +82,12 @@ public class LoginView extends JFrame{
         frame.add(newAcc);
 
         //set the frame
+        //frame.pack();
+        frame.setTitle("Password Protector");
         frame.setSize(370, 270);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 

@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -32,9 +35,18 @@ public class MainView extends JFrame {
      * @param queue thread safe queue to send commands to
      */
     public MainView(DomainInfoListView domainInfoListView, DomainInfoView domainInfoView, LinkedBlockingQueue<Message> queue) {
+    	// Add the side views to the frame
         this.domainInfoListView = domainInfoListView;
         this.domainInfoView = domainInfoView;
         this.queue = queue;
+        
+        // Add resizers to the views
+        this.addComponentListener((ComponentListener) new ComponentAdapter() {
+        	public void componentResized(ComponentEvent e) {
+        		int width = currentWidth();
+        		domainInfoListView.updateView(width - 320); // width / 5 * 2
+        	}
+        });
 
         // create buttons
         addDomainButton.addActionListener(buttonPressListener);
@@ -49,7 +61,10 @@ public class MainView extends JFrame {
         this.SpringLayoutSetup(layout);
 
         this.setPreferredSize(new Dimension(500, 500));
-        this.setResizable(false);
+        this.setMinimumSize(new Dimension(500, 500));
+        this.setTitle("Password Protector");
+        this.setLocationRelativeTo(null);
+        //this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
@@ -63,14 +78,14 @@ public class MainView extends JFrame {
         // Domain Info List
         layout.putConstraint(SpringLayout.NORTH, domainInfoListView, 0,
                 SpringLayout.NORTH, this);
-        layout.putConstraint(SpringLayout.WEST, domainInfoListView, 10,
+        layout.putConstraint(SpringLayout.WEST, domainInfoListView, 0,
                 SpringLayout.WEST, this);
 
         // Domain info view
         layout.putConstraint(SpringLayout.NORTH, domainInfoView, 0,
                 SpringLayout.NORTH, this);
-        layout.putConstraint(SpringLayout.EAST, domainInfoView, 0,
-                SpringLayout.EAST, this);
+        layout.putConstraint(SpringLayout.WEST, domainInfoView, 0,
+                SpringLayout.EAST, domainInfoListView); // SpringLayout.EAST
         
         // Add Domain Button
         layout.putConstraint(SpringLayout.NORTH, addDomainButton, 10,
@@ -90,6 +105,10 @@ public class MainView extends JFrame {
         Message message = new Message();
         message.action = Message.Action.EXIT;
         queue.add(message);
+    }
+    
+    private int currentWidth() {
+    	return this.getWidth();
     }
 
     private class ButtonPress implements ActionListener {

@@ -81,7 +81,8 @@ public class DomainInfoView extends JPanel{
         this.add(genNewPassButton);
         this.add(upleadAttribution);
 
-        this.setPreferredSize(new Dimension(350, 400));
+        this.setPreferredSize(new Dimension(320, 400));
+        this.setMinimumSize(new Dimension(320, 400));
 
         springLayoutSetup((SpringLayout) this.getLayout());
     }

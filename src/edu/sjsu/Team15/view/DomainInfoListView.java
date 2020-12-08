@@ -3,6 +3,8 @@ package edu.sjsu.Team15.view;
 import edu.sjsu.Team15.model.DomainInfo;
 
 import javax.swing.*;
+
+import java.awt.Dimension;
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -14,6 +16,8 @@ public class DomainInfoListView extends JPanel {
     final JList<DomainInfo> list;
     /** The internal ArrayList of all the domains */
     final ArrayList<DomainInfo> domainInfoArrayList; // TODO ADD NEW DOMAIN
+    /** List width */
+    int columnWidth;
 
     /**
      * Constructor
@@ -22,11 +26,13 @@ public class DomainInfoListView extends JPanel {
      */
     public DomainInfoListView(ArrayList<DomainInfo> domainInfoArrayList, DomainInfoView domainInfoView){
         this.domainInfoArrayList = domainInfoArrayList;
+        this.columnWidth = 120;
 
         list = new JList<>();
         list.setListData(domainInfoArrayList.toArray(new DomainInfo[0]));
-        list.setFixedCellHeight(20);
-        list.setFixedCellWidth(120);
+        list.setFixedCellHeight(-1); // 20
+        list.setFixedCellWidth(columnWidth);
+        list.setMinimumSize(new Dimension(120, 360));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL);
         list.setVisibleRowCount(18);
@@ -54,5 +60,13 @@ public class DomainInfoListView extends JPanel {
     public void updateList() {
         list.setListData(domainInfoArrayList.toArray(new DomainInfo[0]));
         this.revalidate();
+    }
+    
+    public void updateView(int i) {
+    	if(i >= 120) {
+    		list.setFixedCellWidth(i);
+    		list.revalidate();
+    		list.repaint();
+    	}
     }
 }

@@ -49,6 +49,8 @@ public class SettingsView extends JFrame {
         // frame setups
         this.setPreferredSize(new Dimension(350, 150));
         this.setResizable(false);
+        this.setTitle("Account Settings");
+        this.setLocationRelativeTo(null);
         this.pack();
         this.setVisible(true);
     }

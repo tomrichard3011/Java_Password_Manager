@@ -35,7 +35,7 @@ public class CreateDomainInfoView extends JFrame{
     /** Pass Text Input */
     private final JPasswordField passField = new JPasswordField();
     /** Submit Button */
-    private final JButton addCreds = new JButton("add Credentials");
+    private final JButton addCreds = new JButton("Add Credentials");
     /** Checkbox */
     private final JCheckBox randomPass = new JCheckBox();
     /** Layout Object */
@@ -79,6 +79,8 @@ public class CreateDomainInfoView extends JFrame{
         // frame setups
         this.setPreferredSize(new Dimension(350, 250));
         this.setResizable(false);
+        this.setTitle("Add a Domain");
+        this.setLocationRelativeTo(null);
         this.pack();
         this.setVisible(true);
     }

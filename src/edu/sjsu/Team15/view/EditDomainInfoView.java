@@ -72,6 +72,8 @@ public class EditDomainInfoView extends JFrame{
         // frame setups
         this.setPreferredSize(new Dimension(350, 150));
         this.setResizable(false);
+        this.setTitle("Edit Domain Information");
+        this.setLocationRelativeTo(null);
         this.pack();
         this.setVisible(true);
     }
